@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, TextInput, Select, FileInput, Table } from '@mantine/core';
+import { Button, Modal, TextInput, Select, FileInput, Table, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
@@ -31,6 +31,13 @@ const MoviesPage: React.FC = () => {
             description: '',
             poster: null as File | null,
         },
+        validate: {
+            title: (value) => (value.trim().length > 0 ? null : 'Title is required'),
+            language: (value) => (value ? null : 'Language is required'),
+            genre: (value) => (value.length > 0 ? null : 'Genre is required'),
+            description: (value) => (value.trim().length > 0 ? null : 'Description is required'),
+            poster: (value) => (value ? null : 'Poster is required'),
+        },
     });
 
     const fetchMovies = async () => {
@@ -53,7 +60,7 @@ const MoviesPage: React.FC = () => {
             formData.append('language', form.values.language);
             formData.append('genre', JSON.stringify(form.values.genre));
             formData.append('isSubtitle', form.values.isSubtitle);
-            formData.append('subtitle', form.values.isSubtitle === 'true' ? (form.values.subtitle || '') : '');
+            formData.append('subtitle', form.values.isSubtitle === 'true' ? form.values.subtitle || '' : '');
             formData.append('description', form.values.description);
             if (form.values.poster) {
                 formData.append('poster', form.values.poster);
@@ -102,7 +109,7 @@ const MoviesPage: React.FC = () => {
                                 <Table.Td>{index + 1}</Table.Td>
                                 <Table.Td>{movie.title}</Table.Td>
                                 <Table.Td>{movie.language}</Table.Td>
-                                <Table.Td>{movie.genre.join(', ')}</Table.Td> {/* Updated to display multiple genres */}
+                                <Table.Td>{movie.genre.join(', ')}</Table.Td>
                                 <Table.Td>{movie.isSubtitle === 'true' ? 'Yes' : 'No'}</Table.Td>
                                 <Table.Td>{new Date(movie.updatedAt).toLocaleDateString()}</Table.Td>
                                 <Table.Td className="flex items-center gap-2">
@@ -118,10 +125,10 @@ const MoviesPage: React.FC = () => {
                 <form onSubmit={form.onSubmit(handleSubmit)}>
                     <div className='grid grid-cols-12 gap-5'>
                         <div className="col-span-12">
-                            <TextInput label='Movie Title' placeholder='Enter movie title' {...form.getInputProps('title')} required />
+                            <TextInput label='Movie Title' placeholder='Enter movie title' {...form.getInputProps('title')} />
                         </div>
                         <div className="col-span-12">
-                            <Select label="Language" placeholder="Select language" data={languages} {...form.getInputProps('language')} required />
+                            <Select label="Language" placeholder="Select language" data={languages} {...form.getInputProps('language')} />
                         </div>
                         <div className="col-span-12">
                             <Select
@@ -129,15 +136,9 @@ const MoviesPage: React.FC = () => {
                                 placeholder="Select genres"
                                 data={genres.map((genre) => ({ value: genre, label: genre }))}
                                 {...form.getInputProps('genre')}
-                                onChange={(value) => {
-                                    // Check if value is an array and filter out any null values
-                                    const selectedGenres = Array.isArray(value) ? value.filter(Boolean) : value ? [value] : [];
-                                    form.setFieldValue('genre', selectedGenres);
-                                }}
                                 searchable
                                 clearable
                                 multiple
-                                required
                             />
                         </div>
                         <div className="col-span-12">
@@ -167,10 +168,10 @@ const MoviesPage: React.FC = () => {
                             />
                         </div>
                         <div className="col-span-12">
-                            <TextInput label='Description' placeholder='Enter description' {...form.getInputProps('description')} />
+                            <Textarea label='Description' placeholder='Enter description' {...form.getInputProps('description')} />
                         </div>
                         <div className="col-span-12">
-                            <FileInput label='Poster' placeholder='Upload poster' {...form.getInputProps('poster')} required />
+                            <FileInput label='Poster' placeholder='Upload poster' {...form.getInputProps('poster')} />
                         </div>
                     </div>
                     <div className="flex items-center justify-end mt-5">

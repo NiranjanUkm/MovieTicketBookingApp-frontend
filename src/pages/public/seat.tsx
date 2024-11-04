@@ -54,28 +54,11 @@ const SeatPage: FC<SeatPageProps> = ({ }) => {
             id: '123',
             description: 'Beverages, Snacks, Recliner Seats',
             slots: [
-                {
-                    id: '123',
-                    time: '10:00 AM',
-                    description: 'Dolby 5.1'
-                },
-                {
-                    id: '124',
-                    time: '1:00 PM',
-                    description: 'Dolby 5.1'
-                },
-                {
-                    id: '125',
-                    time: '4:00 PM'
-                },
-                {
-                    id: '126',
-                    time: '7:00 PM'
-                },
-                {
-                    id: '127',
-                    time: '10:00 PM'
-                },
+                { id: '123', time: '10:00 AM', description: 'Dolby 5.1' },
+                { id: '124', time: '1:00 PM', description: 'Dolby 5.1' },
+                { id: '125', time: '4:00 PM' },
+                { id: '126', time: '7:00 PM' },
+                { id: '127', time: '10:00 PM' },
             ]
         },
         {
@@ -83,63 +66,31 @@ const SeatPage: FC<SeatPageProps> = ({ }) => {
             id: '123',
             description: 'Beverages, Snacks, Recliner Seats',
             slots: [
-                {
-                    id: '123',
-                    time: '10:00 AM',
-                    description: 'Dolby 5.1'
-                },
-                {
-                    id: '124',
-                    time: '1:00 PM',
-                    description: 'Dolby 5.1'
-                },
-                {
-                    id: '125',
-                    time: '4:00 PM',
-                    description: 'Dolby 5.1'
-                },
-                {
-                    id: '126',
-                    time: '7:00 PM'
-                },
-                {
-                    id: '127',
-                    time: '10:00 PM'
-                },
+                { id: '123', time: '10:00 AM', description: 'Dolby 5.1' },
+                { id: '124', time: '1:00 PM', description: 'Dolby 5.1' },
+                { id: '125', time: '4:00 PM', description: 'Dolby 5.1' },
+                { id: '126', time: '7:00 PM' },
+                { id: '127', time: '10:00 PM' },
             ]
         },
     ]
 
     const dates = [
-        {
-            id: '123',
-            day: 'Mon',
-            date: '22 July'
-        },
-        {
-            id: '124',
-            day: 'Tue',
-            date: '23 July'
-        },
-        {
-            id: '125',
-            day: 'Wed',
-            date: '24 July'
-        }
+        { id: '123', day: 'Mon', date: '22 July' },
+        { id: '124', day: 'Tue', date: '23 July' },
+        { id: '125', day: 'Wed', date: '24 July' }
     ]
 
     return (
         <React.Fragment>
             <div className='flex items-center flex-col justify-center mt-5'>
                 <div className='container bg-white rounded-2xl p-4 flex justify-center items-center flex-col'>
-                    <div className="w-[30rem] mx-auto my-6">
+                    <div className="w-full max-w-[30rem] mx-auto my-6">
                         <div className="grid grid-cols-7 gap-2">
                             {seating.map((seat) => (
                                 <div
                                     key={seat.id}
-                                    className={`w-12 h-12 flex items-center justify-center text-white font-bold ${getSeatColor(
-                                        seat
-                                    )} rounded-md cursor-pointer`}
+                                    className={`w-12 h-12 flex items-center justify-center text-white font-bold ${getSeatColor(seat)} rounded-md cursor-pointer`}
                                     onClick={() => handleSeatSelection(seat.id)}
                                 >
                                     {seat.id}
@@ -162,30 +113,22 @@ const SeatPage: FC<SeatPageProps> = ({ }) => {
                 <p>Booking details</p>
                 <p>Theater:
                     <span>
-                        {
-                            theaters.find(theater => theater.id === bookingDetails.theater)?.name
-                        }
+                        {theaters.find(theater => theater.id === bookingDetails.theater)?.name}
                     </span>
                 </p>
                 <p>Date:
                     <span>
-                        {
-                            dates.find(date => date.id === bookingDetails.date)?.date
-                        }
+                        {dates.find(date => date.id === bookingDetails.date)?.date}
                     </span>
                 </p>
                 <p>Slot:
                     <span>
-                        {
-                            theaters.find(theater => theater.id === bookingDetails.theater)?.slots.find(slot => slot.id === bookingDetails.slot)?.time
-                        }
+                        {theaters.find(theater => theater.id === bookingDetails.theater)?.slots.find(slot => slot.id === bookingDetails.slot)?.time}
                     </span>
                 </p>
                 <p>Seats:
                     <span>
-                        {
-                            selectedSeats.join(', ')
-                        }
+                        {selectedSeats.join(', ')}
                     </span>
                 </p>
             </Modal>

@@ -9,6 +9,7 @@ interface City {
   name: string;
   description: string;
   updatedAt: string;
+  theatres: { name: string }[]; // Include theatres array with name property
 }
 
 const CitiesPage: FC = () => {
@@ -76,9 +77,13 @@ const CitiesPage: FC = () => {
                 <Table.Td>{index + 1}</Table.Td>
                 <Table.Td>{city.name}</Table.Td>
                 <Table.Td>
-                  <div>PVR Cinemas, Andheri</div>
-                  <div>INOX Cinemas, Malad</div>
-                  <div>Cinepolis, Andheri</div>
+                  {city.theatres.length > 0 ? (
+                    city.theatres.map((theatre, i) => (
+                      <div key={i}>{theatre.name}</div>
+                    ))
+                  ) : (
+                    <div>No theatres available</div>
+                  )}
                 </Table.Td>
                 <Table.Td>{city.description}</Table.Td>
                 <Table.Td>{new Date(city.updatedAt).toLocaleDateString()}</Table.Td>
