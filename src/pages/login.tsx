@@ -44,7 +44,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
         try {
             if (type === 'login') {
                 const { email, password } = form.values;
-                const response = await axios.post('http://localhost:4001/users/login', { email, password });
+                const response = await axios.post('https://cinehub-backend.onrender.com/users/login', { email, password });
                 const { isAdmin, token } = response.data;
 
                 localStorage.setItem('token', token);
@@ -58,7 +58,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                 }
             } else {
                 const { email, username, password, confirmPassword } = form.values;
-                const response = await axios.post('http://localhost:4001/users/register', {
+                const response = await axios.post('https://cinehub-backend.onrender.com/users/register', {
                     email,
                     username,
                     password,

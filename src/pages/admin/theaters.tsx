@@ -98,7 +98,7 @@ const TheatersPage: FC = () => {
                 beverage: values.beverage === 'true', // Convert to boolean
             };
             await axios.post(
-                'http://localhost:4001/theatres/addTheatre',
+                'https://cinehub-backend.onrender.com/theatres/addTheatre',
                 payload,
                 {
                     headers: {

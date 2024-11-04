@@ -30,7 +30,7 @@ const CitiesPage: FC = () => {
   // Fetch cities from backend
   const fetchCities = async () => {
     try {
-      const response = await axios.get('http://localhost:4001/cities/getCity'); // Adjust endpoint as necessary
+      const response = await axios.get('https://cinehub-backend.onrender.com/cities/getCity'); // Adjust endpoint as necessary
       setCities(response.data);
     } catch (error) {
       console.error("Error fetching cities:", error);
