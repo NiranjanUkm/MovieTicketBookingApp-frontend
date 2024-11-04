@@ -1,6 +1,6 @@
 import { Button } from '@mantine/core';
 import React, { FC } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface SlotPageProps { }
 
@@ -9,7 +9,7 @@ const SlotPage: FC<SlotPageProps> = () => {
     const [theater, setTheater] = React.useState('');
     const [slot, setSlot] = React.useState('');
 
-    const id = useParams()?.id;
+    // const id = useParams()?.id;
     const navigate = useNavigate();
 
     const theaters = [
