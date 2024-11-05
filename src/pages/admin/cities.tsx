@@ -40,7 +40,7 @@ const CitiesPage: FC = () => {
   // Handle city addition
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://localhost:4001/cities/addCity', form.values); // Adjust endpoint as necessary
+      const response = await axios.post('https://cinehub-backend.onrender.com/cities/addCity', form.values); // Adjust endpoint as necessary
       setCities([...cities, response.data.city]); // Update cities list with new city
       form.reset();
       close();
