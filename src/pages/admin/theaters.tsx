@@ -50,7 +50,7 @@ const TheatersPage: FC = () => {
     useEffect(() => {
         const fetchCities = async () => {
             try {
-                const response = await axios.get<City[]>('http://localhost:4001/cities/getCity');
+                const response = await axios.get<City[]>('https://cinehub-backend.onrender.com/cities/getCity');
                 setCities(response.data);
             } catch (error) {
                 console.error("Error fetching cities:", error);
@@ -62,7 +62,7 @@ const TheatersPage: FC = () => {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await axios.get<Movie[]>('http://localhost:4001/movies/getMovie');
+                const response = await axios.get<Movie[]>('https://cinehub-backend.onrender.com/movies/getMovie');
                 setMovies(response.data);
             } catch (error) {
                 console.error("Error fetching movies:", error);
@@ -74,7 +74,7 @@ const TheatersPage: FC = () => {
     const fetchTheaters = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get<Theater[]>('http://localhost:4001/theatres/getTheatre', {
+            const response = await axios.get<Theater[]>('https://cinehub-backend.onrender.com/theatres/getTheatre', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
