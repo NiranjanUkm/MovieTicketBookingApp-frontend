@@ -1,9 +1,22 @@
 import { upperFirst, useToggle } from '@mantine/hooks';
 import React, { FC, useState, useEffect } from 'react';
 import { useForm } from '@mantine/form';
-import { Paper, Group, Stack, TextInput, PasswordInput, Checkbox, Anchor, Button, Text, PaperProps } from '@mantine/core';
+import {
+    Paper,
+    Group,
+    Stack,
+    TextInput,
+    PasswordInput,
+    Checkbox,
+    Anchor,
+    Button,
+    Text,
+    PaperProps
+} from '@mantine/core';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface LoginPageProps extends PaperProps {}
 
@@ -11,7 +24,6 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
     const [type, toggle] = useToggle(['login', 'register']);
     const navigate = useNavigate();
     const location = useLocation();
-    const [error, setError] = useState<string | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -25,30 +37,34 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
     const form = useForm({
         initialValues: {
             email: '',
-            username: '',  
+            username: '',
             password: '',
-            confirmPassword: '',  
-            terms: true,
+            confirmPassword: '',
+            terms: false,
         },
-
         validate: {
-            email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-            password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            password: (value) => (value.length > 6 ? null : 'Password must be at least 6 characters'),
+            confirmPassword: (value, values) =>
+                type === 'register' && value !== values.password ? 'Passwords do not match' : null,
+            terms: (value) =>
+                type === 'register' && !value ? 'You must accept the terms and conditions' : null,
         },
     });
 
     const handleSubmit = async () => {
-        setError(null);
         setLoading(true);
 
-        try {
-            if (type === 'login') {
-                const { email, password } = form.values;
+        if (type === 'login') {
+            const { email, password } = form.values;
+
+            try {
                 const response = await axios.post('https://cinehub-backend.onrender.com/users/login', { email, password });
                 const { isAdmin, token } = response.data;
 
                 localStorage.setItem('token', token);
                 setIsLoggedIn(true);
+                toast.success('Login successful');
 
                 const redirectTo = location.state?.from?.pathname || '/';
                 if (isAdmin) {
@@ -56,8 +72,15 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                 } else {
                     navigate(redirectTo);
                 }
-            } else {
-                const { email, username, password, confirmPassword } = form.values;
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            const { email, username, password, confirmPassword } = form.values;
+
+            try {
                 const response = await axios.post('https://cinehub-backend.onrender.com/users/register', {
                     email,
                     username,
@@ -66,19 +89,18 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                     isAdmin: false,
                 });
 
-                // Retrieve token from response and log the user in
                 const { token } = response.data;
                 localStorage.setItem('token', token);
                 setIsLoggedIn(true);
+                toast.success('Registration successful');
 
-                // Redirect to user home after registration
                 const redirectTo = location.state?.from?.pathname || '/';
                 navigate(redirectTo);
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
             }
-        } catch (error: any) {
-            setError(error.response?.data?.message || 'Something went wrong');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -88,21 +110,21 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
         navigate('/');
     };
 
+    const toggleFormType = () => {
+        toggle();
+        form.reset(); // Reset all form fields when switching between login and register
+    };
+
     return (
         <React.Fragment>
+            <ToastContainer />
             <div className='flex h-dvh items-center justify-center'>
                 <Paper radius="md" p="xl" withBorder {...props}>
                     <Text size="lg" fw={500}>
                         Welcome to Movie Booking, Please {type}
                     </Text>
 
-                    {error && (
-                        <Text color="red" size="sm" mt="md">
-                            {error}
-                        </Text>
-                    )}
-
-                    <form onSubmit={form.onSubmit(() => { handleSubmit() })}>
+                    <form onSubmit={form.onSubmit(handleSubmit)}>
                         <Stack>
                             {type === 'register' && (
                                 <TextInput
@@ -111,17 +133,18 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                                     value={form.values.username}
                                     onChange={(event) => form.setFieldValue('username', event.currentTarget.value)}
                                     radius="md"
+                                    error={form.errors.username}
                                 />
                             )}
 
                             <TextInput
                                 required
                                 label="Email"
-                                placeholder="hello@mantine.dev"
+                                placeholder="hello@example.com"
                                 value={form.values.email}
                                 onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-                                error={form.errors.email && 'Invalid email'}
                                 radius="md"
+                                error={form.errors.email}
                             />
 
                             <PasswordInput
@@ -130,8 +153,8 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                                 placeholder="Your password"
                                 value={form.values.password}
                                 onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-                                error={form.errors.password && 'Password should include at least 6 characters'}
                                 radius="md"
+                                error={form.errors.password}
                             />
 
                             {type === 'register' && (
@@ -142,6 +165,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                                     value={form.values.confirmPassword}
                                     onChange={(event) => form.setFieldValue('confirmPassword', event.currentTarget.value)}
                                     radius="md"
+                                    error={form.errors.confirmPassword}
                                 />
                             )}
 
@@ -150,6 +174,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                                     label="I accept terms and conditions"
                                     checked={form.values.terms}
                                     onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+                                    error={form.errors.terms}
                                 />
                             )}
                         </Stack>
@@ -164,13 +189,13 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                                 </>
                             ) : (
                                 <>
-                                    <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
+                                    <Anchor component="button" type="button" color="dimmed" onClick={toggleFormType} size="xs">
                                         {type === 'register'
                                             ? 'Already have an account? Login'
                                             : "Don't have an account? Register"}
                                     </Anchor>
                                     <Button type="submit" radius="xl" disabled={loading}>
-                                        {upperFirst(type)}
+                                        {loading ? 'Submitting...' : upperFirst(type)}
                                     </Button>
                                 </>
                             )}
