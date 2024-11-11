@@ -42,35 +42,34 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
             confirmPassword: '',
             terms: false,
         },
-        validate: {
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-            password: (value) => (value.length > 6 ? null : 'Password must be at least 6 characters'),
-            confirmPassword: (value, values) =>
-                type === 'register' && value !== values.password ? 'Passwords do not match' : null,
-            terms: (value) =>
-                type === 'register' && !value ? 'You must accept the terms and conditions' : null,
-        },
     });
 
     const handleSubmit = async () => {
         setLoading(true);
-
+    
         if (type === 'login') {
             const { email, password } = form.values;
-
+    
             try {
                 const response = await axios.post('https://cinehub-backend.onrender.com/users/login', { email, password });
-                const { isAdmin, token } = response.data;
-
-                localStorage.setItem('token', token);
-                setIsLoggedIn(true);
-                toast.success('Login successful');
-
-                const redirectTo = location.state?.from?.pathname || '/';
-                if (isAdmin) {
-                    navigate('/app');
+    
+                // Check if response data contains expected properties
+                if (response.data && response.data.token) {
+                    const { isAdmin, token } = response.data;
+    
+                    localStorage.setItem('token', token);
+                    setIsLoggedIn(true);
+                    toast.success('Login successful');
+    
+                    const redirectTo = location.state?.from?.pathname || '/';
+                    if (isAdmin) {
+                        navigate('/app');
+                    } else {
+                        navigate(redirectTo);
+                    }
                 } else {
-                    navigate(redirectTo);
+                    // Handle case where response data is missing expected properties
+                    toast.error('Invalid login credentials');
                 }
             } catch (error: any) {
                 toast.error(error.response?.data?.message || 'Something went wrong');
@@ -78,8 +77,33 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                 setLoading(false);
             }
         } else {
-            const { email, username, password, confirmPassword } = form.values;
+            const { email, username, password, confirmPassword, terms } = form.values;
 
+            // Form validation logic
+            if (!/^\S+@\S+$/.test(email)) {
+                toast.error('Invalid email');
+                setLoading(false);
+                return;
+            }
+
+            if (password.length <= 6) {
+                toast.error('Password must be at least 6 characters');
+                setLoading(false);
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                toast.error('Passwords do not match');
+                setLoading(false);
+                return;
+            }
+
+            if (!terms) {
+                toast.error('You must accept the terms and conditions');
+                setLoading(false);
+                return;
+            }
+    
             try {
                 const response = await axios.post('https://cinehub-backend.onrender.com/users/register', {
                     email,
@@ -88,14 +112,20 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
                     confirmPassword,
                     isAdmin: false,
                 });
-
-                const { token } = response.data;
-                localStorage.setItem('token', token);
-                setIsLoggedIn(true);
-                toast.success('Registration successful');
-
-                const redirectTo = location.state?.from?.pathname || '/';
-                navigate(redirectTo);
+    
+                // Check if response data contains expected properties
+                if (response.data && response.data.token) {
+                    const { token } = response.data;
+    
+                    localStorage.setItem('token', token);
+                    setIsLoggedIn(true);
+                    toast.success('Registration successful');
+    
+                    const redirectTo = location.state?.from?.pathname || '/';
+                    navigate(redirectTo);
+                } else {
+                    toast.error('Registration failed');
+                }
             } catch (error: any) {
                 toast.error(error.response?.data?.message || 'Something went wrong');
             } finally {
