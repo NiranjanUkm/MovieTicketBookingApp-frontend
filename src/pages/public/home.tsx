@@ -7,6 +7,7 @@ import ProfilePage from './profile';
 import SeatPage from './seat';
 import SlotPage from './slot';
 import Navbar from '../../components/navbar';
+import FooterLinks from '../../components/footer';
 
 interface HomePageProps {
 
@@ -25,6 +26,7 @@ const HomePage: FC<HomePageProps> = ({ }) => {
                     <Route path='/seat/:date/:theater/:slot' element={<SeatPage />} />
                     <Route path='/slot/:id' element={<SlotPage />} />
                 </Routes>
+                <FooterLinks />
             </div>
         </React.Fragment>
     );

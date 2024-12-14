@@ -3,6 +3,7 @@ import { Carousel } from '@mantine/carousel';
 import { Image } from '@mantine/core';
 import MovieCard from '../../components/card-2';
 
+
 interface LandingPageProps {}
 
 const LandingPage: FC<LandingPageProps> = () => {
