@@ -2,6 +2,7 @@ import { Button, Image } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { useTheme } from '../../components/ThemeContext'; // Import useTheme
 
 interface DetailsPageProps {}
 
@@ -10,6 +11,7 @@ const DetailsPage: FC<DetailsPageProps> = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const location = useLocation();
+    const { theme } = useTheme(); // Use the theme context
 
     const movies = [
         {
@@ -54,9 +56,9 @@ const DetailsPage: FC<DetailsPageProps> = () => {
 
     return (
         <React.Fragment>
-            <div className="flex justify-center min-h-dvh bg-gray-100 mt-5">
+            <div className={`flex justify-center min-h-dvh ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'} mt-5`}>
                 <div className="container">
-                    <div className="bg-white rounded-3xl p-4">
+                    <div className={`rounded-3xl p-4 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
                         {/* Desktop layout */}
                         <div className="hidden md:flex gap-7">
                             <div className="w-1/6 h-72 rounded-2xl overflow-hidden">
@@ -67,11 +69,20 @@ const DetailsPage: FC<DetailsPageProps> = () => {
                                 />
                             </div>
                             <div className="flex flex-col justify-end">
-                                <p className="font-semibold text-2xl mb-2">{movie?.title}</p>
-                                <p className="text-gray-500 mb-2">{movie?.description}</p>
+                                <p className={`font-semibold text-2xl mb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                                    {movie?.title}
+                                </p>
+                                <p className={`${theme === 'light' ? 'text-gray-500' : 'text-gray-300'} mb-2`}>
+                                    {movie?.description}
+                                </p>
                                 <div className="flex gap-2">
                                     {movie?.languages.map((language: string) => (
-                                        <span key={language} className="bg-gray-100 px-2 py-1 rounded-md">
+                                        <span
+                                            key={language}
+                                            className={`px-2 py-1 rounded-md ${
+                                                theme === 'light' ? 'bg-gray-100' : 'bg-gray-700 text-white'
+                                            }`}
+                                        >
                                             {language}
                                         </span>
                                     ))}
@@ -97,11 +108,20 @@ const DetailsPage: FC<DetailsPageProps> = () => {
                                 />
                             </div>
                             <div className="text-center">
-                                <p className="font-semibold text-2xl mb-2">{movie?.title}</p>
-                                <p className="text-gray-500 mb-2">{movie?.description}</p>
+                                <p className={`font-semibold text-2xl mb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                                    {movie?.title}
+                                </p>
+                                <p className={`${theme === 'light' ? 'text-gray-500' : 'text-gray-300'} mb-2`}>
+                                    {movie?.description}
+                                </p>
                                 <div className="flex gap-2 justify-center">
                                     {movie?.languages.map((language: string) => (
-                                        <span key={language} className="bg-gray-100 px-2 py-1 rounded-md">
+                                        <span
+                                            key={language}
+                                            className={`px-2 py-1 rounded-md ${
+                                                theme === 'light' ? 'bg-gray-100' : 'bg-gray-700 text-white'
+                                            }`}
+                                        >
                                             {language}
                                         </span>
                                     ))}

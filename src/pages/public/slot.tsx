@@ -1,15 +1,16 @@
 import { Button } from '@mantine/core';
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../components/ThemeContext'; // Import useTheme
 
-interface SlotPageProps { }
+interface SlotPageProps {}
 
 const SlotPage: FC<SlotPageProps> = () => {
+    const { theme } = useTheme(); // Use the theme context
     const [date, setDate] = React.useState('');
     const [theater, setTheater] = React.useState('');
     const [slot, setSlot] = React.useState('');
 
-    // const id = useParams()?.id;
     const navigate = useNavigate();
 
     const theaters = [
@@ -47,18 +48,20 @@ const SlotPage: FC<SlotPageProps> = () => {
 
     return (
         <React.Fragment>
-            <div className='flex flex-col items-center mt-5'>
+            <div className={`flex flex-col items-center mt-5 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
                 <div className='container'>
-                    <div className="mx-auto p-6 bg-white rounded-3xl">
-                        <p className='text-2xl font-semibold'>Title</p>
-                        <p className='text-gray-600'>Language</p>
+                    <div className={`mx-auto p-6 rounded-3xl ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
+                        <p className={`text-2xl font-semibold ${theme === 'light' ? 'text-black' : 'text-white'}`}>Title</p>
+                        <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>Language</p>
 
                         {/* Mobile layout for date selection */}
                         <div className='flex my-3 gap-3 flex-wrap md:hidden'>
                             {dates.map((dateItem) => (
                                 <div
                                     key={dateItem.id}
-                                    className={`bg-teal-100 p-3 rounded-lg font-semibold text-teal-500 text-center leading-tight text-sm cursor-pointer ${date === dateItem.id ? 'bg-teal-200' : ''}`}
+                                    className={`p-3 rounded-lg font-semibold text-center leading-tight text-sm cursor-pointer ${
+                                        theme === 'light' ? 'bg-teal-100 text-teal-500' : 'bg-teal-900 text-teal-300'
+                                    } ${date === dateItem.id ? (theme === 'light' ? 'bg-teal-200' : 'bg-teal-700') : ''}`}
                                     onClick={() => setDate(dateItem.id)}
                                 >
                                     <p>{dateItem.day}</p>
@@ -72,7 +75,9 @@ const SlotPage: FC<SlotPageProps> = () => {
                             {dates.map((dateItem) => (
                                 <div
                                     key={dateItem.id}
-                                    className={`bg-teal-100 p-3 rounded-lg font-semibold text-teal-500 text-center leading-tight text-sm cursor-pointer ${date === dateItem.id ? 'bg-teal-200' : ''}`}
+                                    className={`p-3 rounded-lg font-semibold text-center leading-tight text-sm cursor-pointer ${
+                                        theme === 'light' ? 'bg-teal-100 text-teal-500' : 'bg-teal-900 text-teal-300'
+                                    } ${date === dateItem.id ? (theme === 'light' ? 'bg-teal-200' : 'bg-teal-700') : ''}`}
                                     onClick={() => setDate(dateItem.id)}
                                 >
                                     <p>{dateItem.day}</p>
@@ -86,21 +91,33 @@ const SlotPage: FC<SlotPageProps> = () => {
                             {theaters.map((theaterItem) => (
                                 <div
                                     key={theaterItem.id}
-                                    className='bg-white p-4 rounded-lg shadow-md border border-gray-300'
+                                    className={`p-4 rounded-lg shadow-md ${
+                                        theme === 'light' ? 'bg-white border border-gray-300' : 'bg-gray-700 border border-gray-600'
+                                    }`}
                                     onClick={() => setTheater(theaterItem.id)}
                                 >
-                                    <p className='font-semibold text-lg'>{theaterItem.name}</p>
-                                    <p className='text-gray-600'>{theaterItem.description}</p>
+                                    <p className={`font-semibold text-lg ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                                        {theaterItem.name}
+                                    </p>
+                                    <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
+                                        {theaterItem.description}
+                                    </p>
                                     <div className='grid grid-cols-2 text-sm text-center gap-2 mt-3'>
                                         {theaterItem.slots.map((slotItem) => (
                                             <div
                                                 key={slotItem.id}
-                                                className={`bg-teal-100 text-teal-500 p-2 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-teal-200 transition duration-200 ${slot === slotItem.id ? 'bg-teal-200' : ''}`}
+                                                className={`p-2 rounded-lg flex flex-col items-center justify-center cursor-pointer transition duration-200 ${
+                                                    theme === 'light'
+                                                        ? 'bg-teal-100 text-teal-500 hover:bg-teal-200'
+                                                        : 'bg-teal-900 text-teal-300 hover:bg-teal-700'
+                                                } ${slot === slotItem.id ? (theme === 'light' ? 'bg-teal-200' : 'bg-teal-700') : ''}`}
                                                 onClick={() => setSlot(slotItem.id)}
                                             >
                                                 <p className='font-semibold'>{slotItem.time}</p>
                                                 {slotItem.description && (
-                                                    <p className='text-teal-500'>{slotItem.description}</p>
+                                                    <p className={`${theme === 'light' ? 'text-teal-500' : 'text-teal-300'}`}>
+                                                        {slotItem.description}
+                                                    </p>
                                                 )}
                                             </div>
                                         ))}
@@ -109,28 +126,39 @@ const SlotPage: FC<SlotPageProps> = () => {
                             ))}
                         </div>
 
-
                         {/* Desktop layout for theater selection */}
                         <div className='hidden md:flex flex-col gap-3'>
                             {theaters.map((theaterItem) => (
                                 <div
                                     key={theaterItem.id}
-                                    className='p-3 rounded-lg grid grid-cols-12'
+                                    className={`p-3 rounded-lg grid grid-cols-12 ${
+                                        theme === 'light' ? 'bg-white' : 'bg-gray-700'
+                                    }`}
                                     onClick={() => setTheater(theaterItem.id)}
                                 >
                                     <div className='text-sm col-span-4 flex flex-col justify-center'>
-                                        <p className='font-semibold'>{theaterItem.name}</p>
-                                        <p className='text-gray-500'>{theaterItem.description}</p>
+                                        <p className={`font-semibold ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                                            {theaterItem.name}
+                                        </p>
+                                        <p className={`${theme === 'light' ? 'text-gray-500' : 'text-gray-300'}`}>
+                                            {theaterItem.description}
+                                        </p>
                                     </div>
                                     <div className='grid grid-cols-6 text-xs text-center gap-3 col-span-6'>
                                         {theaterItem.slots.map((slotItem) => (
                                             <div
                                                 key={slotItem.id}
-                                                className={`bg-teal-100 text-teal-500 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer ${slot === slotItem.id ? 'bg-teal-200' : ''}`}
+                                                className={`p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer ${
+                                                    theme === 'light'
+                                                        ? 'bg-teal-100 text-teal-500 hover:bg-teal-200'
+                                                        : 'bg-teal-900 text-teal-300 hover:bg-teal-700'
+                                                } ${slot === slotItem.id ? (theme === 'light' ? 'bg-teal-200' : 'bg-teal-700') : ''}`}
                                                 onClick={() => setSlot(slotItem.id)}
                                             >
                                                 <p className='font-semibold'>{slotItem.time}</p>
-                                                <p className='text-teal-500'>{slotItem.description}</p>
+                                                <p className={`${theme === 'light' ? 'text-teal-500' : 'text-teal-300'}`}>
+                                                    {slotItem.description}
+                                                </p>
                                             </div>
                                         ))}
                                     </div>

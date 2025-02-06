@@ -8,28 +8,29 @@ import SeatPage from './seat';
 import SlotPage from './slot';
 import Navbar from '../../components/navbar';
 import FooterLinks from '../../components/footer';
+import { useTheme } from '../../components/ThemeContext'; // Import useTheme
 
-interface HomePageProps {
-
-}
+interface HomePageProps {}
 
 const HomePage: FC<HomePageProps> = ({ }) => {
-    return (
-        <React.Fragment>
-            <div className='bg-gray-100 min-h-dvh'>
-                <Navbar />
-                <Routes>
-                    <Route path='/' element={<LandingPage />} />
-                    <Route path='/details/:id' element={<DetailsPage />} />
-                    <Route path='/payment/:id' element={<PaymentPage />} />
-                    <Route path='/profile' element={<ProfilePage />} />
-                    <Route path='/seat/:date/:theater/:slot' element={<SeatPage />} />
-                    <Route path='/slot/:id' element={<SlotPage />} />
-                </Routes>
-                <FooterLinks />
-            </div>
-        </React.Fragment>
-    );
+  const { theme } = useTheme(); // Use the theme context
+
+  return (
+    <React.Fragment>
+      <div className={`min-h-dvh ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<LandingPage />} />
+          <Route path='/details/:id' element={<DetailsPage />} />
+          <Route path='/payment/:id' element={<PaymentPage />} />
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/seat/:date/:theater/:slot' element={<SeatPage />} />
+          <Route path='/slot/:id' element={<SlotPage />} />
+        </Routes>
+        <FooterLinks />
+      </div>
+    </React.Fragment>
+  );
 };
 
 export default HomePage;
