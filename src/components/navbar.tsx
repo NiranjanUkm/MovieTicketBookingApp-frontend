@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/image1.png';
-import { useTheme } from './themeContext'; // Import useTheme
+import { useTheme } from './ThemeContext'; // Import useTheme
 
 interface NavbarProps {}
 

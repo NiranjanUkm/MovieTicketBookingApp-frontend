@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import DashboardPage from './pages/admin/dashboard';
 import LoginPage from './pages/login';
 import HomePage from './pages/public/home';
-import { ThemeProvider } from './components/themeContext'; // Import ThemeProvider
+import { ThemeProvider } from './components/ThemeContext'; // Import ThemeProvider
 
 function App() {
   return (
