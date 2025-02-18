@@ -43,7 +43,7 @@ const LandingPage: FC<LandingPageProps> = () => {
     {
         id: '128',
         title: 'The Wild Robot',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/the-wild-robot-et00398665-1725532951.jpg',
+        image: 'https://assets-in.bmscdn.com/iedb/movies/images/extra/vertical_logo/mobile/thumbnail/xxlarge/the-wild-robot-et00398665-1732271118.jpg',
         rating: 9.5
     },
     {

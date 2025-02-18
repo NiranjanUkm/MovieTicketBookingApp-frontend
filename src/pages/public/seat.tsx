@@ -1,22 +1,27 @@
-import { Button, Modal } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import React, { FC, useEffect, useState } from 'react';
+import { Button } from '@mantine/core';
+import React, { FC, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTheme } from '../../components/ThemeContext'; // Import useTheme
+import { useTheme } from '../../components/ThemeContext';
+
+declare global {
+    interface Window {
+        hcaptcha: any; // Declare hcaptcha as a global variable
+    }
+}
 
 interface SeatPageProps {}
 
-const SeatPage: FC<SeatPageProps> = ({ }) => {
-    const { theme } = useTheme(); // Use the theme context
+const SeatPage: FC<SeatPageProps> = () => {
+    const { theme } = useTheme();
     const bookingDetails = useParams();
-    const [opened, { open, close }] = useDisclosure(false);
     const [seating, setSeating] = useState<any[]>([]);
     const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+    const [hCaptchaToken, setHCaptchaToken] = useState<string | null>(null); // State to store hCaptcha token
+    const hCaptchaRef = useRef<HTMLDivElement>(null); // Ref for hCaptcha widget
 
     const generateSeatingGrid = (rows: number, cols: number) => {
         const seating = [];
         const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
         for (let i = 0; i < rows; i++) {
             for (let j = 1; j <= cols; j++) {
                 seating.push({
@@ -50,38 +55,90 @@ const SeatPage: FC<SeatPageProps> = ({ }) => {
         }
     };
 
-    const theaters = [
-        {
-            name: 'PVR',
-            id: '123',
-            description: 'Beverages, Snacks, Recliner Seats',
-            slots: [
-                { id: '123', time: '10:00 AM', description: 'Dolby 5.1' },
-                { id: '124', time: '1:00 PM', description: 'Dolby 5.1' },
-                { id: '125', time: '4:00 PM' },
-                { id: '126', time: '7:00 PM' },
-                { id: '127', time: '10:00 PM' },
-            ],
-        },
-        {
-            name: 'PVR',
-            id: '123',
-            description: 'Beverages, Snacks, Recliner Seats',
-            slots: [
-                { id: '123', time: '10:00 AM', description: 'Dolby 5.1' },
-                { id: '124', time: '1:00 PM', description: 'Dolby 5.1' },
-                { id: '125', time: '4:00 PM', description: 'Dolby 5.1' },
-                { id: '126', time: '7:00 PM' },
-                { id: '127', time: '10:00 PM' },
-            ],
-        },
-    ];
+    const handlePayment = async () => {
+        if (selectedSeats.length === 0) {
+            alert("Please select at least one seat!");
+            return;
+        }
 
-    const dates = [
-        { id: '123', day: 'Mon', date: '22 July' },
-        { id: '124', day: 'Tue', date: '23 July' },
-        { id: '125', day: 'Wed', date: '24 July' },
-    ];
+        if (!hCaptchaToken) {
+            alert("Please complete the hCaptcha!");
+            return;
+        }
+
+        try {
+            // Verify hCaptcha token on the backend
+            const hCaptchaResponse = await fetch("http://localhost:4001/apis/verify-captcha", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ hCaptchaToken }),
+            });
+
+            const hCaptchaData = await hCaptchaResponse.json();
+
+            if (!hCaptchaData.success) {
+                alert("Invalid captcha. Please try again.");
+                return;
+            }
+            console.log("hCaptcha Token:", hCaptchaToken);
+            // Proceed with payment if hCaptcha is valid
+            const paymentResponse = await fetch("http://localhost:4001/api/payments/create-session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    selectedSeats,
+                    movieId: bookingDetails.movie,
+                    theatreId: bookingDetails.theater,
+                    slot: bookingDetails.slot,
+                    date: bookingDetails.date,
+                    totalAmount: selectedSeats.length * 150, // ₹150 per seat
+                }),
+            });
+
+            const paymentData = await paymentResponse.json();
+
+            if (paymentResponse.ok && paymentData.url) {
+                window.location.href = paymentData.url; // Redirect to Stripe checkout
+            } else {
+                console.error("Payment Error:", paymentData.error);
+                alert("Payment failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Payment Request Error:", error);
+            alert("Something went wrong!");
+        }
+    };
+
+    useEffect(() => {
+        // Load hCaptcha script dynamically
+        const script = document.createElement("script");
+        script.src = "https://hcaptcha.com/1/api.js";
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+
+        // Initialize hCaptcha
+        script.onload = () => {
+            if (window.hcaptcha && hCaptchaRef.current) {
+                window.hcaptcha.render(hCaptchaRef.current, {
+                    sitekey: "6d547e74-df48-41e2-9c96-92a44bb0419a", // Replace with your hCaptcha site key
+                    theme: theme, // Optional: Set theme based on app theme
+                    callback: (token: string) => {
+                        console.log("hCaptcha Token Received:", token); // Log the token
+                        setHCaptchaToken(token);
+                    }, // Callback when hCaptcha is verified
+                });
+            }
+        };
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, [theme]);
 
     return (
         <React.Fragment>
@@ -104,46 +161,20 @@ const SeatPage: FC<SeatPageProps> = ({ }) => {
                         <p className={`text-center mt-4 ${theme === 'light' ? 'text-black' : 'text-white'}`}>SCREEN HERE</p>
                     </div>
 
-                    <div className={`mt-4 font-semibold text-sm text-center ${theme === 'light' ? 'text-black' : 'text-white'}`}>
-                        <h2>Selected Seats:</h2>
-                        <p>{selectedSeats.join(', ') || 'None selected'}</p>
-                    </div>
+                    {/* Add hCaptcha Widget */}
+                    <div ref={hCaptchaRef}></div>
 
                     <Button
                         className='mt-4'
                         w={200}
                         style={{ backgroundColor: '#0d9488' }}
                         disabled={selectedSeats.length <= 0}
-                        onClick={open}
+                        onClick={handlePayment} // Updated to trigger Stripe payment
                     >
                         Confirm
                     </Button>
                 </div>
             </div>
-
-            <Modal
-                opened={opened}
-                onClose={close}
-                title={<p className={`font-semibold ${theme === 'light' ? 'text-black' : 'text-white'}`}>Booking confirmed</p>}
-                styles={{
-                    content: { backgroundColor: theme === 'light' ? '#fff' : '#374151' },
-                    header: { backgroundColor: theme === 'light' ? '#fff' : '#374151' },
-                }}
-            >
-                <p className={`${theme === 'light' ? 'text-black' : 'text-white'}`}>Booking details</p>
-                <p className={`${theme === 'light' ? 'text-black' : 'text-white'}`}>
-                    Theater: <span>{theaters.find((theater) => theater.id === bookingDetails.theater)?.name}</span>
-                </p>
-                <p className={`${theme === 'light' ? 'text-black' : 'text-white'}`}>
-                    Date: <span>{dates.find((date) => date.id === bookingDetails.date)?.date}</span>
-                </p>
-                <p className={`${theme === 'light' ? 'text-black' : 'text-white'}`}>
-                    Slot: <span>{theaters.find((theater) => theater.id === bookingDetails.theater)?.slots.find((slot) => slot.id === bookingDetails.slot)?.time}</span>
-                </p>
-                <p className={`${theme === 'light' ? 'text-black' : 'text-white'}`}>
-                    Seats: <span>{selectedSeats.join(', ')}</span>
-                </p>
-            </Modal>
         </React.Fragment>
     );
 };
