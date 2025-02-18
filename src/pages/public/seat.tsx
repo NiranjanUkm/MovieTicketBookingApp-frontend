@@ -1,13 +1,7 @@
 import { Button } from '@mantine/core';
-import React, { FC, useEffect, useState, useRef } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTheme } from '../../components/ThemeContext';
-
-declare global {
-    interface Window {
-        hcaptcha: any; // Declare hcaptcha as a global variable
-    }
-}
 
 interface SeatPageProps {}
 
@@ -16,9 +10,8 @@ const SeatPage: FC<SeatPageProps> = () => {
     const bookingDetails = useParams();
     const [seating, setSeating] = useState<any[]>([]);
     const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-    const [hCaptchaToken, setHCaptchaToken] = useState<string | null>(null); // State to store hCaptcha token
-    const hCaptchaRef = useRef<HTMLDivElement>(null); // Ref for hCaptcha widget
 
+    // Function to generate a seating grid
     const generateSeatingGrid = (rows: number, cols: number) => {
         const seating = [];
         const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -34,7 +27,7 @@ const SeatPage: FC<SeatPageProps> = () => {
     };
 
     useEffect(() => {
-        setSeating(generateSeatingGrid(7, 7));
+        setSeating(generateSeatingGrid(7, 7)); // Creating 7x7 grid
     }, []);
 
     const handleSeatSelection = (seatId: string) => {
@@ -61,29 +54,8 @@ const SeatPage: FC<SeatPageProps> = () => {
             return;
         }
 
-        if (!hCaptchaToken) {
-            alert("Please complete the hCaptcha!");
-            return;
-        }
-
         try {
-            // Verify hCaptcha token on the backend
-            const hCaptchaResponse = await fetch("http://localhost:4001/apis/verify-captcha", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ hCaptchaToken }),
-            });
-
-            const hCaptchaData = await hCaptchaResponse.json();
-
-            if (!hCaptchaData.success) {
-                alert("Invalid captcha. Please try again.");
-                return;
-            }
-            console.log("hCaptcha Token:", hCaptchaToken);
-            // Proceed with payment if hCaptcha is valid
+            // Proceed with payment request
             const paymentResponse = await fetch("http://localhost:4001/api/payments/create-session", {
                 method: "POST",
                 headers: {
@@ -113,33 +85,6 @@ const SeatPage: FC<SeatPageProps> = () => {
         }
     };
 
-    useEffect(() => {
-        // Load hCaptcha script dynamically
-        const script = document.createElement("script");
-        script.src = "https://hcaptcha.com/1/api.js";
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-
-        // Initialize hCaptcha
-        script.onload = () => {
-            if (window.hcaptcha && hCaptchaRef.current) {
-                window.hcaptcha.render(hCaptchaRef.current, {
-                    sitekey: "6d547e74-df48-41e2-9c96-92a44bb0419a", // Replace with your hCaptcha site key
-                    theme: theme, // Optional: Set theme based on app theme
-                    callback: (token: string) => {
-                        console.log("hCaptcha Token Received:", token); // Log the token
-                        setHCaptchaToken(token);
-                    }, // Callback when hCaptcha is verified
-                });
-            }
-        };
-
-        return () => {
-            document.body.removeChild(script);
-        };
-    }, [theme]);
-
     return (
         <React.Fragment>
             <div className={`flex items-center flex-col justify-center mt-5 ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-900'}`}>
@@ -161,15 +106,12 @@ const SeatPage: FC<SeatPageProps> = () => {
                         <p className={`text-center mt-4 ${theme === 'light' ? 'text-black' : 'text-white'}`}>SCREEN HERE</p>
                     </div>
 
-                    {/* Add hCaptcha Widget */}
-                    <div ref={hCaptchaRef}></div>
-
                     <Button
                         className='mt-4'
                         w={200}
                         style={{ backgroundColor: '#0d9488' }}
                         disabled={selectedSeats.length <= 0}
-                        onClick={handlePayment} // Updated to trigger Stripe payment
+                        onClick={handlePayment} // Trigger Stripe payment
                     >
                         Confirm
                     </Button>
