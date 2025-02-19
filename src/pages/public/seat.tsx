@@ -56,7 +56,7 @@ const SeatPage: FC<SeatPageProps> = () => {
 
         try {
             // Proceed with payment request
-            const paymentResponse = await fetch("https://movieticketbookingapp-backend-1.onrender.com/api/payments/create-session", {
+            const paymentResponse = await fetch("http://localhost:4001/api/payments/create-session", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

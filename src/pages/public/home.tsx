@@ -9,6 +9,8 @@ import SlotPage from './slot';
 import Navbar from '../../components/navbar';
 import FooterLinks from '../../components/footer';
 import { useTheme } from '../../components/ThemeContext'; // Import useTheme
+import PaymentSuccess from './PaymentSuccess';
+import PaymentFailed from './PaymentFailed';
 
 interface HomePageProps {}
 
@@ -26,6 +28,8 @@ const HomePage: FC<HomePageProps> = ({ }) => {
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/seat/:date/:theater/:slot' element={<SeatPage />} />
           <Route path='/slot/:id' element={<SlotPage />} />
+          <Route path='/payment-success' element={<PaymentSuccess/>} />
+          <Route path='/payment-failed' element={<PaymentFailed/>} />
         </Routes>
         <FooterLinks />
       </div>
