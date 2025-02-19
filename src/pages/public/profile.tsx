@@ -68,7 +68,7 @@ const ProfilePage: FC = () => {
             return;
         }
 
-        try {
+        try { 
             setLoading(true);
             await axios.put('https://movieticketbookingapp-backend-1.onrender.com/users/updateProfile', form.values, {
                 headers: { Authorization: `Bearer ${token}` } // Include Authorization header
