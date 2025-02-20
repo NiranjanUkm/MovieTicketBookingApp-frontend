@@ -1,83 +1,110 @@
-import React, { FC } from 'react';
-import { Carousel } from '@mantine/carousel';
-import { Image } from '@mantine/core';
-import MovieCard from '../../components/card-2';
-import { useTheme } from '../../components/ThemeContext'; // Import useTheme
+import React, { FC, useEffect, useState } from "react";
+import { Carousel } from "@mantine/carousel";
+import { Image, Loader, TextInput, Button } from "@mantine/core";
+import { useTheme } from "../../components/ThemeContext";
+import { Link } from "react-router-dom"; // Import Link for navigation
 
-interface LandingPageProps {}
+interface Movie {
+  imdbID: string;
+  Title: string;
+  Poster: string;
+  Year: string;
+}
 
-const LandingPage: FC<LandingPageProps> = () => {
-  const { theme } = useTheme(); // Use the theme context
+const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY; // Load API Key
 
-  const movies = [
-    {
-        id: '123',
-        title: 'A.R.M',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/arm-et00407124-1726144274.jpg',
-        rating: 9.5
-    },
-    {
-        id: '124',
-        title: 'Bougainvillea',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/bougainvillea-et00413069-1727432413.jpg',
-        rating: 9.5
-    },
-    {
-        id: '125',
-        title: 'Venom',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/venom-the-last-dance-et00383474-1729596212.jpg',
-        rating: 9.5
-    },
-    {
-        id: '126',
-        title: 'Vettaiyan',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/vettaiyan-et00379391-1727938465.jpg',
-        rating: 9.5
-    },
-    {
-        id: '127',
-        title: 'Devara',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/devara--part-1-et00310216-1712750637.jpg',
-        rating: 9.5
-    },
-    {
-        id: '128',
-        title: 'The Wild Robot',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/extra/vertical_logo/mobile/thumbnail/xxlarge/the-wild-robot-et00398665-1732271118.jpg',
-        rating: 9.5
-    },
-    {
-        id: '129',
-        title: 'Pani',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/pani-et00404167-1720515291.jpg',
-        rating: 9.5
-    },
-    {
-        id: '130',
-        title: 'Martin',
-        image: 'https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/martin-et00328827-1677137256.jpg',
-        rating: 9.5
-    },
-];
+const LandingPage: FC = () => {
+  const { theme } = useTheme();
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("batman"); // Default search
+
+  useEffect(() => {
+    fetchMovies(search);
+  }, []);
+
+  const fetchMovies = async (query: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `https://www.omdbapi.com/?s=${query}&apikey=${OMDB_API_KEY}`
+      );
+      const data = await response.json();
+      if (data.Response === "True") {
+        setMovies(data.Search);
+      } else {
+        setMovies([]);
+        setError(data.Error || "No movies found.");
+      }
+    } catch (err) {
+      setError("Failed to fetch movies.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <React.Fragment>
+      {/* Banner Carousel */}
       <Carousel withIndicators height={400} loop>
         <Carousel.Slide>
-          <Image src={'https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg'} />
+          <Image src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg" />
         </Carousel.Slide>
         <Carousel.Slide>
-          <Image src={'/images/banner-2.avif'} />
+          <Image src="/images/banner-2.avif" />
         </Carousel.Slide>
       </Carousel>
 
-      <div className={`p-3 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
-        <p className={`font-semibold text-xl mb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Trending now</p>
-        <div className='grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'>
+      {/* Search Bar */}
+      <div className="flex items-center gap-2 p-3">
+        <TextInput
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search movies..."
+          className="w-full"
+        />
+        <Button onClick={() => fetchMovies(search)}>Search</Button>
+      </div>
+
+      {/* Movie Grid */}
+      <div className={`p-3 ${theme === "light" ? "bg-white" : "bg-gray-800"}`}>
+        <p
+          className={`font-semibold text-xl mb-2 ${
+            theme === "light" ? "text-black" : "text-white"
+          }`}
+        >
+          Trending now
+        </p>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center">
+            <Loader color="blue" />
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
+        {/* Movies Grid */}
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {movies.map((movie) => (
-            <div key={movie.id}>
-              <MovieCard id={movie.id} title={movie.title} image={movie.image} rating={movie.rating} />
-            </div>
+            <Link to={`/movie/${movie.imdbID}`} key={movie.imdbID}>
+              <div className="border rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:scale-105">
+                <Image
+                  src={movie.Poster !== "N/A" ? movie.Poster : "/images/placeholder.jpg"}
+                  alt={movie.Title}
+                  height={250}
+                  className="w-full object-cover"
+                />
+                <div className="p-2 bg-gray-900 text-white text-center">
+                  <p className="font-semibold text-sm">{movie.Title}</p>
+                  <p className="text-xs opacity-75">{movie.Year}</p>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

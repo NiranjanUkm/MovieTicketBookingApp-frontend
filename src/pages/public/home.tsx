@@ -23,7 +23,7 @@ const HomePage: FC<HomePageProps> = ({ }) => {
         <Navbar />
         <Routes>
           <Route path='/' element={<LandingPage />} />
-          <Route path='/details/:id' element={<DetailsPage />} />
+          <Route path='/movie/:id' element={<DetailsPage />} />
           <Route path='/payment/:id' element={<PaymentPage />} />
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/seat/:date/:theater/:slot' element={<SeatPage />} />
