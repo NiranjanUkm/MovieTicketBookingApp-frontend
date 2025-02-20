@@ -1,15 +1,24 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 
+interface TicketDetails {
+  movie: string;
+  theatre: string;
+  date: string;
+  time: string;
+  seats: string[];
+  price: number;
+}
+
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const ticketRef = useRef(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
 
   // Sample ticket data (replace this with real data from your API or payment response)
-  const ticketDetails = location.state || {
+  const ticketDetails: TicketDetails = location.state || {
     movie: 'Oppenheimer',
     theatre: 'PVR Cinemas',
     date: '20 Feb 2025',
