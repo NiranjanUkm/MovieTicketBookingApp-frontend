@@ -49,7 +49,7 @@ const PaymentSuccess = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/api/orders/createOrder",
+        "https://cinehub-backend.onrender.com/api/orders/createOrder",
         {
           movieId: ticketDetails.movieId,
           title: ticketDetails.movie,

@@ -47,7 +47,7 @@ const MyOrder: React.FC = () => {
         throw new Error("No token found. Please log in.");
       }
 
-      const res = await axios.get("http://localhost:4001/api/orders/getOrder", {
+      const res = await axios.get("https://cinehub-backend.onrender.com/api/orders/getOrder", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ const MyOrder: React.FC = () => {
       }
 
       setLoading(true);
-      const res = await axios.delete(`http://localhost:4001/api/orders/${orderId}`, {
+      const res = await axios.delete(`https://cinehub-backend.onrender.com/api/orders/${orderId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
