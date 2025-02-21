@@ -11,6 +11,7 @@ import FooterLinks from '../../components/footer';
 import { useTheme } from '../../components/ThemeContext'; // Import useTheme
 import PaymentSuccess from './PaymentSuccess';
 import PaymentFailed from './PaymentFailed';
+import MyOrder from './myOrder';
 
 interface HomePageProps {}
 
@@ -30,6 +31,7 @@ const HomePage: FC<HomePageProps> = ({ }) => {
           <Route path='/slot/:id' element={<SlotPage />} />
           <Route path='/payment-success' element={<PaymentSuccess/>} />
           <Route path='/payment-failed' element={<PaymentFailed/>} />
+          <Route path='/myOrder' element={<MyOrder/>} />
         </Routes>
         <FooterLinks />
       </div>

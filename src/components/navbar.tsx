@@ -86,6 +86,15 @@ const Navbar: FC<NavbarProps> = () => {
                         View Profile
                       </button>
                       <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          navigate('/myOrder'); // Navigate to My Orders
+                        }}
+                        className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                      >
+                        My Orders
+                      </button>
+                      <button
                         onClick={handleLogout}
                         className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
                       >
