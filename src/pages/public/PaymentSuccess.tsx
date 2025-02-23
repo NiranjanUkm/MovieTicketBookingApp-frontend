@@ -36,7 +36,7 @@ const PaymentSuccess: React.FC = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:4001/api/payments/session/${sessionId}`,
+          `https://cinehub-backend.onrender.com/api/payments/session/${sessionId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -81,7 +81,7 @@ const PaymentSuccess: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4001/api/orders/createOrder",
+        "https://cinehub-backend.onrender.com/api/orders/createOrder",
         {
           movieId: details.movieId,
           title: details.movie,

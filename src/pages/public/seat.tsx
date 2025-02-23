@@ -117,7 +117,7 @@ const SeatPage: FC<SeatPageProps> = () => {
       console.log("Sending payment payload from SeatPage:", bookingPayload);
 
       const paymentResponse = await fetch(
-        "http://localhost:4001/api/payments/create-session",
+        "https://cinehub-backend.onrender.com/api/payments/create-session",
         {
           method: "POST",
           headers: {
