@@ -3,7 +3,6 @@ import React, { FC, useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTheme } from "../../components/ThemeContext";
 
-// Define interface for URL params with index signature
 interface BookingParams {
   movieId?: string;
   date?: string;
@@ -16,16 +15,14 @@ interface SeatPageProps {}
 
 const SeatPage: FC<SeatPageProps> = () => {
   const { theme } = useTheme();
-  const params = useParams<BookingParams>(); // Get all params
-  const { movieId, date, theater, slot } = params; // Destructure
+  const { movieId, date, theater, slot } = useParams<BookingParams>();
   const location = useLocation();
   const [seating, setSeating] = useState<any[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
-  const { movie } = location.state || { movie: { title: "Unknown Title", language: "Unknown Language" } };
-
-  console.log("SeatPage raw params:", params); // Debug all params
-  console.log("SeatPage destructured:", { movieId, date, theater, slot }); // Debug destructured values
+  const { movie } = location.state || {
+    movie: { title: "Unknown Title", language: "Unknown Language", poster: "/images/placeholder.jpg" },
+  };
 
   const theaters = [
     {
@@ -103,7 +100,7 @@ const SeatPage: FC<SeatPageProps> = () => {
     try {
       const totalAmount = selectedSeats.length * 150;
       const bookingPayload = {
-        movieId: movieId, // From useParams
+        movieId: movieId,
         movieTitle: movie.title,
         theatre: theaters.find((t) => t.id === theater)?.name || "Unknown Theatre",
         date: dates.find((d) => d.id === date)?.date || "Unknown Date",
@@ -112,6 +109,7 @@ const SeatPage: FC<SeatPageProps> = () => {
           ?.slots.find((s) => s.id === slot)?.time || "Unknown Time",
         seats: selectedSeats,
         totalAmount,
+        poster: movie.poster, // Add poster to payload
       };
 
       console.log("Sending payment payload from SeatPage:", bookingPayload);

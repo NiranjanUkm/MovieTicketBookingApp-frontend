@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Carousel } from "@mantine/carousel";
 import { Image, Loader, TextInput, Button } from "@mantine/core";
 import { useTheme } from "../../components/ThemeContext";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 
 interface Movie {
   imdbID: string;
@@ -11,14 +11,14 @@ interface Movie {
   Year: string;
 }
 
-const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY; // Load API Key
+const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY;
 
 const LandingPage: FC = () => {
   const { theme } = useTheme();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState("batman"); // Default search
+  const [search, setSearch] = useState("batman");
 
   useEffect(() => {
     fetchMovies(search);
@@ -47,7 +47,6 @@ const LandingPage: FC = () => {
 
   return (
     <React.Fragment>
-      {/* Banner Carousel */}
       <Carousel withIndicators height={400} loop>
         <Carousel.Slide>
           <Image src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg" />
@@ -57,7 +56,6 @@ const LandingPage: FC = () => {
         </Carousel.Slide>
       </Carousel>
 
-      {/* Search Bar */}
       <div className="flex items-center gap-2 p-3">
         <TextInput
           value={search}
@@ -68,7 +66,6 @@ const LandingPage: FC = () => {
         <Button onClick={() => fetchMovies(search)}>Search</Button>
       </div>
 
-      {/* Movie Grid */}
       <div className={`p-3 ${theme === "light" ? "bg-white" : "bg-gray-800"}`}>
         <p
           className={`font-semibold text-xl mb-2 ${
@@ -78,20 +75,17 @@ const LandingPage: FC = () => {
           Trending now
         </p>
 
-        {/* Loading State */}
         {loading && (
           <div className="flex justify-center">
             <Loader color="blue" />
           </div>
         )}
 
-        {/* Error Message */}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        {/* Movies Grid */}
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {movies.map((movie) => (
-            <Link to={`/movie/${movie.imdbID}`} key={movie.imdbID}>
+            <Link to={`/movie/${movie.imdbID}`} key={movie.imdbID} state={{ movie }}>
               <div className="border rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:scale-105">
                 <Image
                   src={movie.Poster !== "N/A" ? movie.Poster : "/images/placeholder.jpg"}

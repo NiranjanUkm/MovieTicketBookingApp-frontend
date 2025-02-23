@@ -29,7 +29,7 @@ const HomePage: FC<HomePageProps> = ({ }) => {
           <Route path='/slot/:id' element={<SlotPage />} />
           <Route path='/payment-success' element={<PaymentSuccess/>} />
           <Route path='/payment-failed' element={<PaymentFailed/>} />
-          <Route path='/my-order' element={<MyOrder/>} />
+          <Route path='/my-orders' element={<MyOrder/>} />
         </Routes>
         <FooterLinks />
       </div>

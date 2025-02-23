@@ -45,7 +45,14 @@ const DetailsPage: FC = () => {
     const token = localStorage.getItem("token");
     if (token && movie) {
       navigate(`/slot/${movie.imdbID}`, {
-        state: { movie: { imdbID: movie.imdbID, title: movie.Title, language: movie.Language } },
+        state: {
+          movie: {
+            imdbID: movie.imdbID,
+            title: movie.Title,
+            language: movie.Language,
+            poster: movie.Poster, // Pass Poster
+          },
+        },
       });
     } else {
       navigate("/login", { state: { from: location } });
@@ -69,7 +76,6 @@ const DetailsPage: FC = () => {
       >
         <div className="container">
           <div className={`rounded-3xl p-4 ${theme === "light" ? "bg-white" : "bg-gray-800"}`}>
-            {/* Desktop layout */}
             <div className="hidden md:flex gap-7">
               <div className="w-1/6 h-72 rounded-2xl overflow-hidden">
                 <Image src={movie.Poster} alt={movie.Title} className="w-full h-full object-cover" />
@@ -100,7 +106,6 @@ const DetailsPage: FC = () => {
               </div>
             </div>
 
-            {/* Mobile layout */}
             <div className="flex flex-col gap-5 md:hidden">
               <div className="w-full h-73 rounded-2xl overflow-hidden mb-4">
                 <Image src={movie.Poster} alt={movie.Title} className="w-full h-full object-cover" />
