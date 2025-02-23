@@ -42,7 +42,7 @@ const ProfilePage: FC = () => {
             }
 
             try {
-                const response = await axios.get('https://cinehub-backend.onrender.com/users/getProfile', {
+                const response = await axios.get('http://localhost:4001/users/getProfile', {
                     headers: { Authorization: `Bearer ${token}` } // Include Authorization header
                 });
                 form.setValues(response.data);
@@ -70,7 +70,7 @@ const ProfilePage: FC = () => {
 
         try { 
             setLoading(true);
-            await axios.put('https://movieticketbookingapp-backend-1.onrender.com/users/updateProfile', form.values, {
+            await axios.put('http://localhost:4001/users/updateProfile', form.values, {
                 headers: { Authorization: `Bearer ${token}` } // Include Authorization header
             });
             setLoading(false);

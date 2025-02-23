@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import LandingPage from './landing';
 import DetailsPage from './detail';
-import PaymentPage from './payment';
 import ProfilePage from './profile';
 import SeatPage from './seat';
 import SlotPage from './slot';
@@ -25,13 +24,12 @@ const HomePage: FC<HomePageProps> = ({ }) => {
         <Routes>
           <Route path='/' element={<LandingPage />} />
           <Route path='/movie/:id' element={<DetailsPage />} />
-          <Route path='/payment/:id' element={<PaymentPage />} />
           <Route path='/profile' element={<ProfilePage />} />
-          <Route path='/seat/:date/:theater/:slot' element={<SeatPage />} />
+          <Route path='/seat/:movieId/:date/:theater/:slot' element={<SeatPage />} />
           <Route path='/slot/:id' element={<SlotPage />} />
           <Route path='/payment-success' element={<PaymentSuccess/>} />
           <Route path='/payment-failed' element={<PaymentFailed/>} />
-          <Route path='/myOrder' element={<MyOrder/>} />
+          <Route path='/my-order' element={<MyOrder/>} />
         </Routes>
         <FooterLinks />
       </div>

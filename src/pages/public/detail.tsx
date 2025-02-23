@@ -1,7 +1,7 @@
 import { Button, Image } from "@mantine/core";
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useTheme } from "../../components/ThemeContext"; // Import useTheme
+import { useTheme } from "../../components/ThemeContext";
 
 interface Movie {
   imdbID: string;
@@ -12,14 +12,14 @@ interface Movie {
   imdbRating: string;
 }
 
-const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY; // Load API Key
+const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY;
 
 const DetailsPage: FC = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme } = useTheme(); // Use the theme context
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -43,8 +43,10 @@ const DetailsPage: FC = () => {
 
   const handleBookNow = () => {
     const token = localStorage.getItem("token");
-    if (token) {
-      navigate(`/slot/${movie?.imdbID}`);
+    if (token && movie) {
+      navigate(`/slot/${movie.imdbID}`, {
+        state: { movie: { imdbID: movie.imdbID, title: movie.Title, language: movie.Language } },
+      });
     } else {
       navigate("/login", { state: { from: location } });
     }
