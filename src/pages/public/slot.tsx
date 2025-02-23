@@ -12,14 +12,11 @@ const SlotPage: FC<SlotPageProps> = () => {
   const [slot, setSlot] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = useParams<{ id: string }>(); // Get movieId from URL
+  const { id } = useParams<{ id: string }>();
 
   const { movie } = location.state || {
-    movie: { imdbID: "unknown", title: "Unknown Title", language: "Unknown Language" },
+    movie: { imdbID: "unknown", title: "Unknown Title", language: "Unknown Language", poster: "/images/placeholder.jpg" },
   };
-
-  console.log("SlotPage movie data from state:", movie);
-  console.log("SlotPage movieId from params:", id);
 
   const theaters = [
     {
@@ -54,7 +51,6 @@ const SlotPage: FC<SlotPageProps> = () => {
     { id: "date-125", day: "Wed", date: "24 July" },
   ];
 
-  // Function to set both theater and slot when a slot is clicked
   const handleSlotSelection = (theaterId: string, slotId: string) => {
     setTheater(theaterId);
     setSlot(slotId);
@@ -72,7 +68,6 @@ const SlotPage: FC<SlotPageProps> = () => {
               {movie.language}
             </p>
 
-            {/* Mobile layout for date selection */}
             <div className="flex my-3 gap-3 flex-wrap md:hidden">
               {dates.map((dateItem) => (
                 <div
@@ -88,7 +83,6 @@ const SlotPage: FC<SlotPageProps> = () => {
               ))}
             </div>
 
-            {/* Desktop layout for date selection */}
             <div className="hidden md:flex my-3 gap-3">
               {dates.map((dateItem) => (
                 <div
@@ -104,7 +98,6 @@ const SlotPage: FC<SlotPageProps> = () => {
               ))}
             </div>
 
-            {/* Mobile layout for theater and slot selection */}
             <div className="flex flex-col gap-4 md:hidden">
               {theaters.map((theaterItem) => (
                 <div
@@ -143,7 +136,6 @@ const SlotPage: FC<SlotPageProps> = () => {
               ))}
             </div>
 
-            {/* Desktop layout for theater and slot selection */}
             <div className="hidden md:flex flex-col gap-3">
               {theaters.map((theaterItem) => (
                 <div
