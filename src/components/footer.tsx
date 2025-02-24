@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, Container, ActionIcon, Group, Title, Divider } from "@mantine/core";
+// Removed unused React import
+import { Text, ActionIcon, Group, Title, Divider } from "@mantine/core"; // Removed Container
 import {
   IconBrandTwitter,
   IconBrandYoutube,
@@ -50,7 +50,7 @@ export function FooterLinks() {
         className={`text-sm font-medium ${
           theme === "light"
             ? "text-gray-700 hover:text-teal-600"
-            : "text-gray-200 hover:text-teal-400" // Lightened from gray-300 to gray-200
+            : "text-gray-200 hover:text-teal-400"
         } transition-colors duration-200`}
         component="a"
         href={link.link}
@@ -64,7 +64,7 @@ export function FooterLinks() {
       <div className="flex flex-col" key={group.title}>
         <Text
           className={`text-lg font-semibold ${
-            theme === "light" ? "text-gray-900" : "text-white" // Changed to white from gray-100
+            theme === "light" ? "text-gray-900" : "text-white"
           } mb-2`}
         >
           {group.title}
@@ -83,7 +83,7 @@ export function FooterLinks() {
         backgroundImage:
           theme === "light"
             ? "radial-gradient(circle at 10px 10px, #e5e7eb 1px, transparent 1px)"
-            : "radial-gradient(circle at 10px 10px, #6b7280 1px, transparent 1px)", // Lighter dots #6b7280
+            : "radial-gradient(circle at 10px 10px, #6b7280 1px, transparent 1px)",
         backgroundSize: "40px 40px",
       }}
     >
@@ -102,7 +102,7 @@ export function FooterLinks() {
             </Title>
             <Text
               size="sm"
-              c={theme === "light" ? "gray.7" : "gray.2"} // Lightened from gray-3 to gray-2
+              c={theme === "light" ? "gray.7" : "gray.2"}
               className="text-center md:text-left mt-2 max-w-xs"
             >
               Your ultimate movie ticket booking experience—fast, easy, and cinematic.
@@ -112,13 +112,13 @@ export function FooterLinks() {
                 size="lg"
                 color="gray"
                 variant="transparent"
-                className={theme === "light" ? "text-gray-600" : "text-gray-300"} // Lightened from gray-400
+                className={theme === "light" ? "text-gray-600" : "text-gray-300"}
               >
                 <IconMail size={20} />
               </ActionIcon>
               <Text
                 size="sm"
-                c={theme === "light" ? "gray.7" : "gray.2"} // Lightened from gray-3
+                c={theme === "light" ? "gray.7" : "gray.2"}
               >
                 support@cinehub.com
               </Text>
@@ -126,13 +126,13 @@ export function FooterLinks() {
                 size="lg"
                 color="gray"
                 variant="transparent"
-                className={theme === "light" ? "text-gray-600" : "text-gray-300"} // Lightened from gray-400
+                className={theme === "light" ? "text-gray-600" : "text-gray-300"}
               >
                 <IconPhone size={20} />
               </ActionIcon>
               <Text
                 size="sm"
-                c={theme === "light" ? "gray.7" : "gray.2"} // Lightened from gray-3
+                c={theme === "light" ? "gray.7" : "gray.2"}
               >
                 +91 944-727-7118
               </Text>
@@ -148,13 +148,13 @@ export function FooterLinks() {
         {/* Bottom Section */}
         <Divider
           my="lg"
-          color={theme === "light" ? "gray.2" : "gray.6"} // Lightened from gray-7
+          color={theme === "light" ? "gray.2" : "gray.6"}
           className="mt-12"
         />
         <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-6">
           <Text
             size="sm"
-            c={theme === "light" ? "gray.6" : "gray.3"} // Lightened from gray-4
+            c={theme === "light" ? "gray.6" : "gray.3"}
             className="text-center sm:text-left"
           >
             © 2025 CineHub. All rights reserved.
