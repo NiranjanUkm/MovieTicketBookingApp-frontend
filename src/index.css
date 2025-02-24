@@ -9,3 +9,47 @@
   font-family: "Plus Jakarta Sans", sans-serif;
   font-optical-sizing: auto;
 }
+
+/* Scrollbar Styles */
+:root[data-theme="light"] {
+  --scrollbar-thumb-start: #e6fffa; /* teal-50 */
+  --scrollbar-thumb-end: #b2f5ea; /* teal-100 */
+  --scrollbar-track: #99f6e4; /* teal-200 */
+}
+
+:root[data-theme="dark"] {
+  --scrollbar-thumb-start: #0d9488; /* teal-900 */
+  --scrollbar-thumb-end: #14b8a6; /* teal-800 */
+  --scrollbar-track: #0f766e; /* teal-950 */
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--scrollbar-thumb-start), var(--scrollbar-thumb-end));
+  border-radius: 6px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    var(--scrollbar-thumb-start),
+    var(--scrollbar-thumb-end)
+  );
+  filter: brightness(1.1);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-end) var(--scrollbar-track);
+}

@@ -4,6 +4,7 @@ import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
 import axios from "axios";
 import { Button, Text, Loader, Image } from "@mantine/core";
+import { QRCodeCanvas } from "qrcode.react"; // Import QRCodeCanvas
 
 interface TicketDetails {
   movieId: string;
@@ -14,6 +15,7 @@ interface TicketDetails {
   seats: string[];
   price: number;
   poster: string;
+  orderId?: string; // Added to store order ID
 }
 
 const PaymentSuccess: React.FC = () => {
@@ -99,6 +101,7 @@ const PaymentSuccess: React.FC = () => {
         }
       );
       console.log("🎟 Ticket booked successfully:", response.data);
+      setTicketDetails((prev) => prev ? { ...prev, orderId: response.data.order._id } : null); // Store order ID
       setBookingStatus("success");
     } catch (error: any) {
       const errorDetails = error.response?.data || error.message;
@@ -118,7 +121,7 @@ const PaymentSuccess: React.FC = () => {
         const pdf = new jsPDF({
           orientation: "portrait",
           unit: "mm",
-          format: "a5", // A5 size for ticket-like feel (148 x 210 mm)
+          format: "a5",
         });
         const width = pdf.internal.pageSize.getWidth();
         const height = pdf.internal.pageSize.getHeight();
@@ -141,6 +144,10 @@ const PaymentSuccess: React.FC = () => {
       </div>
     );
   }
+
+  const qrCodeUrl = ticketDetails.orderId
+    ? `http://localhost:4001/api/tickets/${ticketDetails.orderId}`
+    : "http://localhost:4001";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -172,6 +179,8 @@ const PaymentSuccess: React.FC = () => {
           border: "2px solid #0d9488",
           boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
           background: "linear-gradient(135deg, #ffffff, #f0f0f0)",
+          backgroundImage: "radial-gradient(circle at 5px 5px, #d1d5db 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
         }}
       >
         {/* Header */}
@@ -240,17 +249,15 @@ const PaymentSuccess: React.FC = () => {
           </Text>
         </div>
 
-        {/* Barcode */}
-        <div className="mt-4 flex justify-center gap-1">
-          {Array(20)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="w-1 h-6"
-                style={{ backgroundColor: i % 2 === 0 ? "#000" : "#fff" }}
-              />
-            ))}
+        {/* QR Code */}
+        <div className="mt-4 flex justify-center">
+          <QRCodeCanvas
+            value={qrCodeUrl}
+            size={100}
+            bgColor="#ffffff"
+            fgColor="#000000"
+            level="H"
+          />
         </div>
 
         {/* Perforated Edge Effect */}
