@@ -146,8 +146,8 @@ const PaymentSuccess: React.FC = () => {
   }
 
   const qrCodeUrl = ticketDetails.orderId
-    ? `http://localhost:4001/api/tickets/${ticketDetails.orderId}`
-    : "http://localhost:4001";
+    ? `https://cinehub-backend.onrender.com/api/tickets/${ticketDetails.orderId}`
+    : "https://cinehub-backend.onrender.com";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">

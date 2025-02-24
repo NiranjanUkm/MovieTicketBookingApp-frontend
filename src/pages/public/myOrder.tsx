@@ -47,7 +47,7 @@ const MyOrders: React.FC = () => {
         throw new Error("No token found. Please log in.");
       }
 
-      const res = await axios.get("http://localhost:4001/api/orders/getOrder", { // Updated endpoint
+      const res = await axios.get("https://cinehub-backend.onrender.com/api/orders/getOrder", { // Updated endpoint
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
