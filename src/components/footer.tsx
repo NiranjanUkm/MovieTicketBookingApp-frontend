@@ -1,45 +1,57 @@
-// import React from 'react';
-import { Text, Container, ActionIcon, Group } from '@mantine/core';
-import { IconBrandTwitter, IconBrandYoutube, IconBrandInstagram } from '@tabler/icons-react';
-import logo from '../assets/image1.png'
-import './FooterLinks.css';  // Make sure this file exists and is properly styled.
+import React from "react";
+import { Text, Container, ActionIcon, Group, Title, Divider } from "@mantine/core";
+import {
+  IconBrandTwitter,
+  IconBrandYoutube,
+  IconBrandInstagram,
+  IconMail,
+  IconPhone,
+} from "@tabler/icons-react";
+import { useTheme } from "../components/ThemeContext";
+import logo from "../assets/image1.png";
 
 const data = [
   {
-    title: 'About',
+    title: "About",
     links: [
-      { label: 'Features', link: '#' },
-      { label: 'Pricing', link: '#' },
-      { label: 'Support', link: '#' },
-      { label: 'Forums', link: '#' },
+      { label: "Features", link: "#" },
+      { label: "Pricing", link: "#" },
+      { label: "Support", link: "#" },
+      { label: "Forums", link: "#" },
     ],
   },
   {
-    title: 'Project',
+    title: "Project",
     links: [
-      { label: 'Contribute', link: '#' },
-      { label: 'Media assets', link: '#' },
-      { label: 'Changelog', link: '#' },
-      { label: 'Releases', link: '#' },
+      { label: "Contribute", link: "#" },
+      { label: "Media assets", link: "#" },
+      { label: "Changelog", link: "#" },
+      { label: "Releases", link: "#" },
     ],
   },
   {
-    title: 'Community',
+    title: "Community",
     links: [
-      { label: 'Join Discord', link: '#' },
-      { label: 'Follow on Twitter', link: '#' },
-      { label: 'Email newsletter', link: '#' },
-      { label: 'GitHub discussions', link: '#' },
+      { label: "Join Discord", link: "#" },
+      { label: "Follow on Twitter", link: "#" },
+      { label: "Email newsletter", link: "#" },
+      { label: "GitHub discussions", link: "#" },
     ],
   },
 ];
 
 export function FooterLinks() {
+  const { theme } = useTheme();
+
   const groups = data.map((group) => {
     const links = group.links.map((link, index) => (
-      <Text<'a'>
+      <Text<"a">
         key={index}
-        className="text-gray-500 hover:text-blue-600 transition duration-200"
+        className={`text-sm font-medium ${
+          theme === "light"
+            ? "text-gray-700 hover:text-teal-600"
+            : "text-gray-200 hover:text-teal-400" // Lightened from gray-300 to gray-200
+        } transition-colors duration-200`}
         component="a"
         href={link.link}
         onClick={(event) => event.preventDefault()}
@@ -50,44 +62,144 @@ export function FooterLinks() {
 
     return (
       <div className="flex flex-col" key={group.title}>
-        <Text className="text-lg font-semibold text-gray-800">{group.title}</Text>
-        <div className="flex flex-col space-y-1">{links}</div>
+        <Text
+          className={`text-lg font-semibold ${
+            theme === "light" ? "text-gray-900" : "text-white" // Changed to white from gray-100
+          } mb-2`}
+        >
+          {group.title}
+        </Text>
+        <div className="flex flex-col gap-2">{links}</div>
       </div>
     );
   });
 
   return (
-    <footer className="bg-gray-900 text-white py-10">
-      <Container className="flex flex-col md:flex-row md:justify-between items-center">
-        <div className="flex flex-col items-center md:items-start mb-10 md:mb-0">
-        <img src={logo} alt="Logo" width={50} height={50} />
-        <Text size="xs pt-3" color="dimmed" className="text-gray-400 mt-2">
-            CineHub: An Efficient Movie Ticket Booking Application
+    <footer
+      className={`w-full py-12 ${
+        theme === "light" ? "bg-gray-100" : "bg-gray-900"
+      }`}
+      style={{
+        backgroundImage:
+          theme === "light"
+            ? "radial-gradient(circle at 10px 10px, #e5e7eb 1px, transparent 1px)"
+            : "radial-gradient(circle at 10px 10px, #6b7280 1px, transparent 1px)", // Lighter dots #6b7280
+        backgroundSize: "40px 40px",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:justify-between items-center gap-12">
+          {/* Logo and Info */}
+          <div className="flex flex-col items-center md:items-start">
+            <img src={logo} alt="CineHub Logo" width={70} height={70} />
+            <Title
+              order={2}
+              c={theme === "light" ? "teal.7" : "teal.4"}
+              fw={700}
+              mt="md"
+            >
+              CineHub
+            </Title>
+            <Text
+              size="sm"
+              c={theme === "light" ? "gray.7" : "gray.2"} // Lightened from gray-3 to gray-2
+              className="text-center md:text-left mt-2 max-w-xs"
+            >
+              Your ultimate movie ticket booking experience—fast, easy, and cinematic.
+            </Text>
+            <Group mt="md" gap="lg">
+              <ActionIcon
+                size="lg"
+                color="gray"
+                variant="transparent"
+                className={theme === "light" ? "text-gray-600" : "text-gray-300"} // Lightened from gray-400
+              >
+                <IconMail size={20} />
+              </ActionIcon>
+              <Text
+                size="sm"
+                c={theme === "light" ? "gray.7" : "gray.2"} // Lightened from gray-3
+              >
+                support@cinehub.com
+              </Text>
+              <ActionIcon
+                size="lg"
+                color="gray"
+                variant="transparent"
+                className={theme === "light" ? "text-gray-600" : "text-gray-300"} // Lightened from gray-400
+              >
+                <IconPhone size={20} />
+              </ActionIcon>
+              <Text
+                size="sm"
+                c={theme === "light" ? "gray.7" : "gray.2"} // Lightened from gray-3
+              >
+                +91 944-727-7118
+              </Text>
+            </Group>
+          </div>
+
+          {/* Link Groups */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 text-center sm:text-left">
+            {groups}
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <Divider
+          my="lg"
+          color={theme === "light" ? "gray.2" : "gray.6"} // Lightened from gray-7
+          className="mt-12"
+        />
+        <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-6">
+          <Text
+            size="sm"
+            c={theme === "light" ? "gray.6" : "gray.3"} // Lightened from gray-4
+            className="text-center sm:text-left"
+          >
+            © 2025 CineHub. All rights reserved.
           </Text>
+
+          <Group gap="xl">
+            <ActionIcon
+              size="xl"
+              color={theme === "light" ? "teal" : "teal"}
+              variant="subtle"
+              className={`${
+                theme === "light"
+                  ? "hover:bg-teal-100 hover:text-teal-700"
+                  : "hover:bg-teal-800 hover:text-teal-300"
+              } transition-colors`}
+            >
+              <IconBrandTwitter size={24} stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon
+              size="xl"
+              color={theme === "light" ? "teal" : "teal"}
+              variant="subtle"
+              className={`${
+                theme === "light"
+                  ? "hover:bg-teal-100 hover:text-teal-700"
+                  : "hover:bg-teal-800 hover:text-teal-300"
+              } transition-colors`}
+            >
+              <IconBrandYoutube size={24} stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon
+              size="xl"
+              color={theme === "light" ? "teal" : "teal"}
+              variant="subtle"
+              className={`${
+                theme === "light"
+                  ? "hover:bg-teal-100 hover:text-teal-700"
+                  : "hover:bg-teal-800 hover:text-teal-300"
+              } transition-colors`}
+            >
+              <IconBrandInstagram size={24} stroke={1.5} />
+            </ActionIcon>
+          </Group>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center sm:text-left">
-          {groups}
-        </div>
-      </Container>
-
-      <Container className="flex flex-col sm:flex-row sm:justify-between items-center mt-8 pt-4 border-t border-gray-700">
-        <Text size="sm" className="text-gray-500">
-          © 2024 CineHub. All rights reserved.
-        </Text>
-
-        <Group className="mt-4 sm:mt-0">
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandTwitter size={18} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandYoutube size={18} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon size="lg" color="gray" variant="subtle">
-            <IconBrandInstagram size={18} stroke={1.5} />
-          </ActionIcon>
-        </Group>
-      </Container>
+      </div>
     </footer>
   );
 }

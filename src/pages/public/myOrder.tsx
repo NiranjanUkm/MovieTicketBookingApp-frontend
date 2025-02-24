@@ -27,7 +27,7 @@ interface Order {
   seats: string[];
 }
 
-const MyOrder: React.FC = () => {
+const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +47,7 @@ const MyOrder: React.FC = () => {
         throw new Error("No token found. Please log in.");
       }
 
-      const res = await axios.get("https://cinehub-backend.onrender.com/api/orders/getOrder", {
+      const res = await axios.get("http://localhost:4001/api/orders/getOrder", { // Updated endpoint
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ const MyOrder: React.FC = () => {
   };
 
   const handleCancelOrder = async (orderId: string) => {
-    console.log("handleCancelOrder called with orderId:", orderId); // Debug
+    console.log("handleCancelOrder called with orderId:", orderId);
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -113,7 +113,7 @@ const MyOrder: React.FC = () => {
   };
 
   const confirmCancelOrder = (orderId: string, title: string) => {
-    console.log("confirmCancelOrder called with:", orderId, title); // Debug
+    console.log("confirmCancelOrder called with:", orderId, title);
     modals.openConfirmModal({
       title: "Confirm Cancellation",
       children: (
@@ -177,9 +177,7 @@ const MyOrder: React.FC = () => {
               style={{
                 backgroundColor: theme === "light" ? "#ffffff" : "#2d2e34",
                 transition: "transform 0.2s ease-in-out",
-                "&:hover": { transform: "scale(1.05)" },
               }}
-              component="div"
             >
               <Card.Section>
                 <Image
@@ -220,10 +218,7 @@ const MyOrder: React.FC = () => {
                 size="xs"
                 mt="md"
                 fullWidth
-                onClick={() => {
-                  console.log("Cancel button clicked for order:", order._id); // Debug
-                  confirmCancelOrder(order._id, order.title);
-                }}
+                onClick={() => confirmCancelOrder(order._id, order.title)}
               >
                 Cancel Order
               </Button>
@@ -235,4 +230,4 @@ const MyOrder: React.FC = () => {
   );
 };
 
-export default MyOrder;
+export default MyOrders;

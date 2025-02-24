@@ -17,7 +17,7 @@ const PaymentFailed: React.FC = () => {
       {/* Retry & Home Buttons */}
       <div className="mt-6 flex gap-4">
         <button
-          onClick={() => navigate("/seat/:date/:theater/:slot")}
+          onClick={() => navigate("/seat/:movieId/:date/:theater/:slot")}
           className="bg-red-500 text-white px-6 py-2 rounded-md shadow-md hover:bg-red-600"
         >
           Retry Payment
