@@ -53,7 +53,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
       const { email, password } = form.values;
 
       try {
-        const response = await axios.post("https://cinehub-backend.onrender.com/users/login", {
+        const response = await axios.post("http://localhost:4001/users/login", {
           email,
           password,
         });
@@ -107,7 +107,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
       }
 
       try {
-        const response = await axios.post("https://cinehub-backend.onrender.com/users/register", {
+        const response = await axios.post("http://localhost:4001/users/register", {
           email,
           username,
           password,

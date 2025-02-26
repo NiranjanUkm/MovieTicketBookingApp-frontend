@@ -20,7 +20,7 @@ const PaymentPage: React.FC<PaymentPageProps> = ({ selectedSeats, movieId, theat
 
   const handlePayment = async () => {
     try {
-      const response = await axios.post("https://cinehub-backend.onrender.com/api/payments/create-session", {
+      const response = await axios.post("http://localhost:4001/api/payments/create-session", {
         selectedSeats,
         movieId,
         theatreId,

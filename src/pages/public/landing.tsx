@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef } from "react";
-import { Carousel, CarouselSlide } from "@mantine/carousel"; // Updated import
+import { Carousel, CarouselSlide } from "@mantine/carousel"; // No need for CarouselImperativeRef
 import { Image, Loader, TextInput, Button, Text, Title, Group } from "@mantine/core";
 import { useTheme } from "../../components/ThemeContext";
 import { Link, useLocation } from "react-router-dom";
@@ -42,7 +42,7 @@ const LandingPage: FC = () => {
   const [search, setSearch] = useState("");
   const topRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<any>(null); // Ref for carousel control
+  const [embla, setEmbla] = useState<any>(null); // State to hold Embla API
   const location = useLocation();
 
   useEffect(() => {
@@ -51,14 +51,18 @@ const LandingPage: FC = () => {
 
   // Autoplay logic with useEffect
   useEffect(() => {
+    if (!embla) return;
+
     const interval = setInterval(() => {
-      if (carouselRef.current) {
-        carouselRef.current.next(); // Move to next slide
-      }
+      console.log("Autoplay: Moving to next slide");
+      embla.scrollNext(); // Use Embla’s scrollNext
     }, 3000); // 3 seconds delay
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+    return () => {
+      console.log("Autoplay: Cleaning up interval");
+      clearInterval(interval);
+    };
+  }, [embla]); // Depend on embla
 
   const fetchLatestMovies = async () => {
     setLoading(true);
@@ -148,7 +152,7 @@ const LandingPage: FC = () => {
           align="center"
           slidesToScroll={1}
           loop
-          ref={carouselRef} // Assign ref for control
+          getEmblaApi={setEmbla} // Set Embla API to state
           className="relative rounded-3xl overflow-hidden shadow-lg"
           styles={{
             control: {
