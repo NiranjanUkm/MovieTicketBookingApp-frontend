@@ -40,6 +40,7 @@ const SeatPage: FC = () => {
   const navigate = useNavigate();
   const [seating, setSeating] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false); // Loading state
 
   const { movie } = (location.state as { movie: Movie }) || {
     movie: { title: "Unknown Title", language: "Unknown Language", poster: "/images/placeholder.jpg" },
@@ -164,6 +165,9 @@ const SeatPage: FC = () => {
       return;
     }
 
+    setIsLoadingPayment(true); // Start loading
+    const startTime = Date.now();
+
     try {
       const totalAmount = selectedSeats.length * 150;
       const bookingPayload = {
@@ -186,6 +190,8 @@ const SeatPage: FC = () => {
       };
 
       console.log("Sending payment payload from SeatPage:", bookingPayload);
+      const fetchStart = Date.now();
+      console.log("Fetch start time:", fetchStart - startTime, "ms");
 
       const paymentResponse = await fetch(
         "https://cinehub-backend.onrender.com/api/payments/create-session",
@@ -199,11 +205,18 @@ const SeatPage: FC = () => {
         }
       );
 
+      const fetchEnd = Date.now();
+      console.log("Fetch completed in:", fetchEnd - fetchStart, "ms");
+
       const paymentData = await paymentResponse.json();
+      const parseEnd = Date.now();
+      console.log("Response parsed in:", parseEnd - fetchEnd, "ms");
 
       if (paymentResponse.ok && paymentData.url) {
         console.log("Redirecting to Stripe checkout URL:", paymentData.url);
+        const redirectStart = Date.now();
         window.location.href = paymentData.url;
+        console.log("Redirect initiated in:", Date.now() - redirectStart, "ms"); // Might not log due to page unload
       } else {
         console.error("Payment Error:", paymentData.error);
         navigate("/payment-failed", {
@@ -231,10 +244,12 @@ const SeatPage: FC = () => {
           totalAmount: selectedSeats.length * 150,
         },
       });
+    } finally {
+      setIsLoadingPayment(false); // End loading
+      console.log("Total payment process time:", Date.now() - startTime, "ms");
     }
   };
 
-  // Fallback if movie or params are undefined
   if (!movie || !movieId || !date || !theater || !slot) {
     console.error("Missing required params or movie state, redirecting to home");
     navigate("/");
@@ -326,9 +341,10 @@ const SeatPage: FC = () => {
           onClick={handlePayment}
           radius="xl"
           size="lg"
-          disabled={selectedSeats.length === 0}
+          disabled={selectedSeats.length === 0 || isLoadingPayment}
+          loading={isLoadingPayment} // Show loading spinner
           className={`w-full md:w-64 mx-auto ${
-            selectedSeats.length > 0
+            selectedSeats.length > 0 && !isLoadingPayment
               ? theme === "light"
                 ? "bg-gradient-to-r from-teal-500 to-teal-700 hover:from-teal-600 hover:to-teal-800"
                 : "bg-gradient-to-r from-teal-600 to-teal-800 hover:from-teal-700 hover:to-teal-900"
@@ -337,7 +353,7 @@ const SeatPage: FC = () => {
               : "bg-gray-600 cursor-not-allowed"
           } text-white transition-all duration-200 transform hover:scale-105 shadow-md`}
         >
-          Confirm ({selectedSeats.length} Seat{selectedSeats.length !== 1 ? "s" : ""})
+          {isLoadingPayment ? "Processing..." : `Confirm (${selectedSeats.length} Seat${selectedSeats.length !== 1 ? "s" : ""})`}
         </Button>
       </div>
     </div>
