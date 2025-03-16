@@ -45,7 +45,7 @@ const PaymentSuccess: FC = () => {
 
       try {
         const response = await axios.get(
-          `https://cinehub-backend.onrender.com/api/payments/session/${sessionId}`,
+          `http://localhost:4001/api/payments/session/${sessionId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -60,10 +60,10 @@ const PaymentSuccess: FC = () => {
 
         const dynamicDetails: TicketDetails = {
           movieId: metadata.movieId,
-          movie: metadata.movieTitle,
-          theatre: metadata.theatre,
-          date: metadata.date,
-          time: metadata.time,
+          movie: metadata.title, // Changed from movieTitle to title
+          theatre: metadata.theater, // Changed from theatre to theater (ID)
+          date: metadata.date,       // ID
+          time: metadata.slot,       // Changed from time to slot (ID)
           seats: JSON.parse(metadata.seats),
           price: parseInt(metadata.totalAmount, 10),
           poster: metadata.poster,
@@ -90,12 +90,16 @@ const PaymentSuccess: FC = () => {
 
     try {
       const response = await axios.post(
-        "https://cinehub-backend.onrender.com/api/orders/createOrder",
+        "http://localhost:4001/api/orders/createOrder",
         {
           movieId: details.movieId,
           title: details.movie,
           poster: details.poster,
           seats: details.seats,
+          theater: details.theatre, // Changed from theatre to theater (ID)
+          date: details.date,       // ID
+          slot: details.time,       // Changed from time to slot (ID)
+          price: details.price,     // Added price
         },
         {
           headers: {
@@ -136,8 +140,8 @@ const PaymentSuccess: FC = () => {
   };
 
   const qrCodeUrl = ticketDetails?.orderId
-    ? `https://cinehub-backend.onrender.com/api/tickets/${ticketDetails.orderId}`
-    : "https://cinehub-backend.onrender.com";
+    ? `http://localhost:4001/api/tickets/${ticketDetails.orderId}`
+    : "http://localhost:4001";
 
   return (
     <div
@@ -322,4 +326,4 @@ const PaymentSuccess: FC = () => {
   );
 };
 
-export default PaymentSuccess;  
+export default PaymentSuccess;

@@ -53,7 +53,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
       const { email, password } = form.values;
 
       try {
-        const response = await axios.post("https://cinehub-backend.onrender.com/users/login", {
+        const response = await axios.post("http://localhost:4001/users/login", {
           email,
           password,
         });
@@ -75,7 +75,17 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
           toast.error("Invalid login credentials");
         }
       } catch (error: any) {
-        toast.error(error.response?.data?.message || "Something went wrong");
+        const message = error.response?.data?.message || "Something went wrong";
+        if (message === "This account is inactive. Please contact the admin.") {
+          toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            style: { background: "#fef2f2", color: "#b91c1c" }, // Red theme for inactive warning
+          });
+        } else {
+          toast.error(message);
+        }
+        console.error("Login error:", message);
       } finally {
         setLoading(false);
       }
@@ -107,7 +117,7 @@ const LoginPage: FC<LoginPageProps> = ({ ...props }) => {
       }
 
       try {
-        const response = await axios.post("https://cinehub-backend.onrender.com/users/register", {
+        const response = await axios.post("http://localhost:4001/users/register", {
           email,
           username,
           password,

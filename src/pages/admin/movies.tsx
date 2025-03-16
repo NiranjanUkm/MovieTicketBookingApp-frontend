@@ -42,7 +42,7 @@ const MoviesPage: React.FC = () => {
 
     const fetchMovies = async () => {
         try {
-            const response = await axios.get('https://cinehub-backend.onrender.com/movies/getMovie');
+            const response = await axios.get('http://localhost:4001/movies/getMovie');
             setTableData(response.data);
         } catch (error) {
             console.error('Fetch error:', error);
@@ -66,7 +66,7 @@ const MoviesPage: React.FC = () => {
                 formData.append('poster', form.values.poster);
             }
 
-            const response = await axios.post('https://cinehub-backend.onrender.com/movies/addMovie', formData, {
+            const response = await axios.post('http://localhost:4001/movies/addMovie', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 

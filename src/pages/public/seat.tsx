@@ -95,7 +95,7 @@ const SeatPage: FC = () => {
       name: "AMC Theatres",
       id: "theater-127",
       slots: [
-        { id: "slot-523", time: "10:30 AM" },
+        { id: "slot-523", time: "10:00 AM" },
         { id: "slot-524", time: "1:30 PM" },
         { id: "slot-525", time: "4:30 PM" },
         { id: "slot-526", time: "7:30 PM" },
@@ -123,14 +123,15 @@ const SeatPage: FC = () => {
     { id: "date-127", date: "26 July" },
   ];
 
-  const generateSeatingGrid = (rows: number, cols: number): Seat[] => {
+  const generateSeatingGrid = (rows: number, cols: number, booked: string[]): Seat[] => {
     const seating: Seat[] = [];
     const rowLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (let i = 0; i < rows; i++) {
       for (let j = 1; j <= cols; j++) {
+        const seatId = `${rowLetters[i]}${j}`;
         seating.push({
-          status: "available",
-          id: `${rowLetters[i]}${j}`,
+          status: booked.includes(seatId) ? "unavailable" : "available",
+          id: seatId,
         });
       }
     }
@@ -138,8 +139,32 @@ const SeatPage: FC = () => {
   };
 
   useEffect(() => {
-    setSeating(generateSeatingGrid(7, 7));
-  }, []);
+    const fetchBookedSeats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `http://localhost:4001/api/orders/seats?movieId=${movieId}&date=${date}&theater=${theater}&slot=${slot}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        if (data.success) {
+          setSeating(generateSeatingGrid(7, 7, data.bookedSeats || []));
+        } else {
+          console.error("Failed to fetch booked seats:", data.message);
+          setSeating(generateSeatingGrid(7, 7, [])); // Fallback to empty booked seats
+        }
+      } catch (error) {
+        console.error("Error fetching booked seats:", error);
+        setSeating(generateSeatingGrid(7, 7, [])); // Fallback on error
+      }
+    };
+    fetchBookedSeats();
+  }, [movieId, date, theater, slot]);
 
   const handleSeatSelection = (seatId: string) => {
     setSelectedSeats((prevSelectedSeats) =>
@@ -172,12 +197,10 @@ const SeatPage: FC = () => {
       const totalAmount = selectedSeats.length * 150;
       const bookingPayload = {
         movieId: movieId,
-        movieTitle: movie.title,
-        theatre: theaters.find((t) => t.id === theater)?.name || "Unknown Theatre",
-        date: dates.find((d) => d.id === date)?.date || "Unknown Date",
-        time: theaters
-          .find((t) => t.id === theater)
-          ?.slots.find((s) => s.id === slot)?.time || "Unknown Time",
+        title: movie.title, // Changed from movieTitle to title
+        theater: theater,  // Use ID (e.g., "theater-123")
+        date: date,        // Use ID (e.g., "date-124")
+        slot: slot,        // Use ID (e.g., "slot-123")
         seats: selectedSeats,
         totalAmount,
         poster: movie.poster,
@@ -194,7 +217,7 @@ const SeatPage: FC = () => {
       console.log("Fetch start time:", fetchStart - startTime, "ms");
 
       const paymentResponse = await fetch(
-        "https://cinehub-backend.onrender.com/api/payments/create-session",
+        "http://localhost:4001/api/payments/create-session",
         {
           method: "POST",
           headers: {
