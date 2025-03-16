@@ -17,7 +17,7 @@ const UsersPage: FC = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4001/users/all', {
+      const response = await axios.get('https://cinehub-backend.onrender.com/users/all', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +34,7 @@ const UsersPage: FC = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:4001/users/${userId}/toggle`,
+        `https://cinehub-backend.onrender.com/users/${userId}/toggle`,
         { isActive: !currentStatus },
         {
           headers: {

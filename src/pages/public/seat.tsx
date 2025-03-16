@@ -143,7 +143,7 @@ const SeatPage: FC = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:4001/api/orders/seats?movieId=${movieId}&date=${date}&theater=${theater}&slot=${slot}`,
+          `https://cinehub-backend.onrender.com/api/orders/seats?movieId=${movieId}&date=${date}&theater=${theater}&slot=${slot}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -217,7 +217,7 @@ const SeatPage: FC = () => {
       console.log("Fetch start time:", fetchStart - startTime, "ms");
 
       const paymentResponse = await fetch(
-        "http://localhost:4001/api/payments/create-session",
+        "https://cinehub-backend.onrender.com/api/payments/create-session",
         {
           method: "POST",
           headers: {
